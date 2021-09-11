@@ -1,0 +1,68 @@
+ Decoding Algorithm Simulation for (128,64,22) BCH Code
+
+ -----------------------------------------------------
+
+ Start Time : 2021 / 9 / 11 , 15 : 30
+
+ The Number of Blocks =  10
+ The Number of Symbols =  640
+ Start SNR [dB] =  2 [dB] ¡÷ Es/N0 [dB] = -1.0103 [dB]
+ End SNR [dB] =  2 [dB] ¡÷ Es/N0 [dB] = -1.0103 [dB]
+ Step SNR [dB] =  2 [dB]
+ Block Step = 1
+ Stack Size = 10000
+ Error Blocks Threshold = 10
+
+ -----------------------------------------------------
+ 1. Eb/N0 [dB]						
+ 2. Es/N0 [dB]						
+ 3. BER								
+ 4. BLER							
+ 5. Avg. STE / info. bit			
+ 6. Avg. COM / info. bit			
+ 7. Avg. Goal Node / decoding		
+ 5-1. Avg. Binary STE / info. bit   
+ 8-1. Worst Case, Avg. STE / info.bit	
+ 8-2. Worst Case, Avg. COM / info.bit	
+ 9. Worst Case, Goal Node			
+ 9-1. Worst_OSC_Ratio				
+10. Max Used STACK					
+--------------------------------	
+11. DM_STE / info. bit				
+12. DM_COM / info. bit				
+13. DM_DN / decoding				
+--------------------------------	
+14. Spending Time[s]				
+15. Decoding Rate[ block / s ]		
+-----------------------------------------------------
+
+2
+-1.0103
+0
+0
+6.39114e+06
+7.7278e+06
+6.38759e+06
+0
+5.24167e+07
+1.50737e+07
+0
+0
+10001
+-----------
+0
+0
+0
+-----------
+0
+0
+0
+0
+0
+0
+-----------
+202.129
+0.0544207
+
+
+

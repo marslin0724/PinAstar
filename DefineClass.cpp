@@ -110,6 +110,9 @@ void OPER_PARA::ShowDecoder()
 		<< "\n " << A_Star_2_Base_PC_out_CBC_OSC_Adaptive_i_Fano << ":  A* Algorithm 2-Base-PCout-CBC-OSC Adaptive-i Fano"
 		<< "\n " << A_Star_2_Base_PC_out_CBC_OSC_Adaptive_i_Parallel_Fano << ":  A* Algorithm 2-Base-PCout-CBC-OSC Adaptive-i Parallel Fano"
 
+		<< "\n\n *** Pin's Decoding Algorithm"
+		<< "\n ---------------------------------------------------------------"
+		<< "\n " << A_Star_Segment_Orignal << ": A* Algorithm using Segment"
 
 		<< "\n\n *** Other Decoding Algorithm"
 		<< "\n ---------------------------------------------------------------"

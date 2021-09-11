@@ -3,11 +3,11 @@
   <ItemGroup>
     <Filter Include="來源檔案">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="標頭檔">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
     <Filter Include="資源檔">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
@@ -15,6 +15,59 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AStarDecode.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="AWGN.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="DefineClass.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="DefineParameter.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="FileOperation.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="LDPC_OPER.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearBlockCodes.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="MatrixOperation.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="POLAR_OPER.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Source.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="TURBO_OPER.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AStarDecode_Adaptive.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="AStarDecode_DM_III.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="AStarDecode_RSS_II.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="AStarDecode_RSS_OSC_II.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="AstarDecode_segments.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
     <ClCompile Include="..\AStarDecode.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
@@ -63,52 +116,5 @@
     <ClCompile Include="..\TURBO_OPER.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
-    <ClCompile Include="AStarDecode_Adaptive.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="AStarDecode_RSS_OSC_II.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="AStarDecode_DM_III.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-    <ClCompile Include="AStarDecode_RSS_II.cpp">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="AStarDecode.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="DefineClass.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="MatrixOperation.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="Source.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="AWGN.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="DefineParameter.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="FileOperation.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="LDPC_OPER.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="LinearBlockCodes.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="POLAR_OPER.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="TURBO_OPER.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

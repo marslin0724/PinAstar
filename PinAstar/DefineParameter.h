@@ -221,6 +221,9 @@
 #define A_Star_2_Base_PC_out_CBC_OSC_Adaptive_i_Fano						106
 #define A_Star_2_Base_PC_out_CBC_OSC_Adaptive_i_Parallel_Fano				107
 
+//Pin
+#define A_Star_Segment_Orignal			110
+
 
 
 // Other Decoding Algorithms

@@ -413,6 +413,11 @@ void main()
 		Decoder = LDPC_Modified_RBP;
 		break;
 
+		//Pin
+	case A_Star_Segment_Orignal:
+		Decoder = A_star_Segment;
+		break;
+
 		//Test
 	case A_Star_PC_out_CBC_OSC_Test:
 		Decoder = A_star_PC_out_CBC_OSC_Test;
@@ -1917,7 +1922,7 @@ void main()
 
 
 						printf(
-							"\r Block #%.0f (%.2f %%)"
+							"\n\r Block #%.0f (%.2f %%)"
 							", Eb #%.0f"
 							", BER¡G%.2e"
 							//", BER67¡G%.2e"
