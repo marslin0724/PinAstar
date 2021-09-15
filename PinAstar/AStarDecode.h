@@ -469,10 +469,17 @@ void A_star_PC_out_Dynamic_CBC_OSC(MATRIX<__int8> &G, DECODING_INFO &decoding_in
 
 //Pin
 void A_star_Segment(MATRIX<__int8>& G, DECODING_INFO& decoding_info);
+void A_star_Segment_ver2(MATRIX<__int8>& G, DECODING_INFO& decoding_info);
 inline void Pre_Procedure_Segment(DECODING_INFO& decoding_info,
 	MATRIX<double>& Metric_Table,
 	vector<NODE_PATH>& S_Stack, vector<NODE_PATH>& C_Stack, size_t segment_length, size_t offset);
 inline void Combine_Segment(NODE_PATH& Update_node, vector<NODE_PATH>& C_Stack_Update, vector<NODE_PATH>& C_Stack, vector<NODE_PATH>& S_Stack1, vector<NODE_PATH>& S_Stack2,
 	NODE_PATH& Best_Goal, size_t segment_length,
 	DECODING_INFO& decoding_info, MATRIX<__int8>& G, MATRIX<__int8>& Sorted_G, MATRIX<double>& Metric_Table);
+inline void Combine_Segment_ver2(NODE_PATH &Update_node, vector<NODE_PATH> &C_Stack, vector<NODE_PATH>& O_Stack,
+	NODE_PATH &Best_Goal, size_t segment_length,
+	DECODING_INFO& decoding_info, MATRIX<__int8>& G, MATRIX<__int8>& Sorted_G, MATRIX<double>& Metric_Table);
+
 inline void Place_C_Stack(vector<NODE_PATH>& Stack, NODE_PATH& child_node, DECODING_INFO& decoding_info);
+inline void Update_Stack( NODE_PATH &Best_Goal, vector<NODE_PATH> &Stack);
+inline bool Update_Best_Goal_Segments(NODE_PATH &Child_Node, NODE_PATH &Best_Goal, vector<NODE_PATH> &Stack);

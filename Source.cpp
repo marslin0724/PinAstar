@@ -417,6 +417,9 @@ void main()
 	case A_Star_Segment_Orignal:
 		Decoder = A_star_Segment;
 		break;
+	case A_Star_Segment_Orignal_ver2:
+		Decoder = A_star_Segment_ver2;
+		break;
 
 		//Test
 	case A_Star_PC_out_CBC_OSC_Test:
