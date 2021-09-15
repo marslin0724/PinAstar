@@ -1,17 +1,16 @@
- 
- A* I (Original) Decoding Algorithm Simulation for (128,64,22) BCH Code
+ Decoding Algorithm Simulation for (128,36) BCH Code
 
  -----------------------------------------------------
 
- Start Time : 2021 / 9 / 13 , 17 : 28
+ Start Time : 2021 / 9 / 15 , 15 : 59
 
  The Number of Blocks =  10
- The Number of Symbols =  640
- Start SNR [dB] =  2 [dB] ¡÷ Es/N0 [dB] = -1.0103 [dB]
- End SNR [dB] =  2 [dB] ¡÷ Es/N0 [dB] = -1.0103 [dB]
+ The Number of Symbols =  360
+ Start SNR [dB] =  2 [dB] ¡÷ Es/N0 [dB] = -3.50907 [dB]
+ End SNR [dB] =  2 [dB] ¡÷ Es/N0 [dB] = -3.50907 [dB]
  Step SNR [dB] =  2 [dB]
  Block Step = 1
- Stack Size = 10000
+ Stack Size = 3000
  Error Blocks Threshold = 10
 
  -----------------------------------------------------
@@ -38,32 +37,32 @@
 -----------------------------------------------------
 
 2
--1.0103
-0.0296875
-0.1
-24357.7
-5.75681e+06
-21808.4
-0
-49142.4
-1.38374e+07
+-3.50907
 0
 0
-10001
+198851
+2.63184e+06
+77067.2
+0
+624391
+4.66888e+06
+0
+0
+3001
 -----------
 0
 0
 0
 -----------
-0.0296875
-0.1
+0
+0
 0
 0
 0
 0
 -----------
-15.313
-0.718344
+12.209
+0.900975
 
 
 

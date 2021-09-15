@@ -113,6 +113,7 @@ void OPER_PARA::ShowDecoder()
 		<< "\n\n *** Pin's Decoding Algorithm"
 		<< "\n ---------------------------------------------------------------"
 		<< "\n " << A_Star_Segment_Orignal << ": A* Algorithm using Segment"
+		<< "\n " << A_Star_Segment_Orignal_ver2 << ": A* Algorithm using Segment ver2"
 
 		<< "\n\n *** Other Decoding Algorithm"
 		<< "\n ---------------------------------------------------------------"
