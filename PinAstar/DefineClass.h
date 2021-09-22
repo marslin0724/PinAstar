@@ -92,7 +92,8 @@ public:
 	int parity_index = 0, non_updated_num = 0;
 	int base = 0;
 	//segment
-	int temp_idx = 0,idx_end = 0,segment = 0,segment_metric = 0;
+	int temp_idx = 0, idx_end = 0, segment = 0;
+	double segment_metric = 0;
 	vector <__int8>
 		// corresponding message bits
 		message_bits;

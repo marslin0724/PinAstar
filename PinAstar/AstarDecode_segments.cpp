@@ -1,5 +1,5 @@
 ﻿#include "AStarDecode.h"
-
+MATRIX<double> * M;
 void A_star_Segment(MATRIX<__int8>& G, DECODING_INFO& decoding_info)
 {
 	//test
@@ -59,6 +59,7 @@ void A_star_Segment(MATRIX<__int8>& G, DECODING_INFO& decoding_info)
 	if(C_Stack1.size() >= 2)
 		Combine_Segment(C_Stack1.at(1), C_Stack1, C_Stack2, S_Stack1, S_Stack2, Best_Goal, segment_length, decoding_info,
 						G, Sorted_G, Metric_Table);
+	
 	/*
 	for (int i = 0; i < 4;i++) {
 		cout << (int)Best_Goal.message_bits.at(i) << ",";
@@ -168,9 +169,9 @@ void A_star_Segment_ver2(MATRIX<__int8>& G, DECODING_INFO& decoding_info)
 	NODE_PATH
 		Pointer(message_length),
 		Best_Goal(message_length),
-		Child_Node(message_length),
-		Combine_node(message_length);
-	
+		Child_Node(message_length);
+		
+	M = &Metric_Table;
 
 	Best_Goal.metric = FLT_MAX;
 
@@ -192,18 +193,20 @@ void A_star_Segment_ver2(MATRIX<__int8>& G, DECODING_INFO& decoding_info)
 	Pre_Procedure_Segment(decoding_info, Metric_Table, S_Stack1, C_Stack1, segment_length, 0);
 	Pre_Procedure_Segment(decoding_info, Metric_Table, S_Stack2, C_Stack2, segment_length, segment_length);
 	//結合兩個node成一個candidate codeword
+	
 	Combine_Segment(C_Stack1.at(0), C_Stack1, C_Stack2, S_Stack1, S_Stack2, Best_Goal, segment_length, decoding_info,
 		G, Sorted_G, Metric_Table);
 	
 	if (C_Stack1.size() >= 2)
 		Combine_Segment(C_Stack1.at(1), C_Stack1, C_Stack2, S_Stack1, S_Stack2, Best_Goal, segment_length, decoding_info,
 			G, Sorted_G, Metric_Table);
-	
+
 	/*
 	for (int i = 0; i < 4;i++) {
 		cout << (int)Best_Goal.message_bits.at(i) << ",";
 	}
 	cout << endl;*/
+	
 	while ((!S_Stack1.empty()) || (!S_Stack2.empty()) || (!O_Stack.empty())) {
 		if ((!S_Stack1.empty()) && (!S_Stack2.empty())) {
 			if (S_Stack1.at(0).metric < S_Stack2.at(0).metric) {
@@ -241,9 +244,26 @@ void A_star_Segment_ver2(MATRIX<__int8>& G, DECODING_INFO& decoding_info)
 
 				if ((Child_Node.level == segment_length) && (Child_Node.metric < Best_Goal.metric)) {
 					Place_C_Stack(C_Stack1, Child_Node, decoding_info);
-					Combine_Segment_ver2(Combine_node,Child_Node, C_Stack2, O_Stack,Best_Goal, segment_length, decoding_info,
+					Combine_Segment_ver2(Child_Node, C_Stack2, O_Stack,Best_Goal, segment_length, decoding_info,
 						G, Sorted_G, Metric_Table);
-
+					/*
+					decoding_info.STE += (codeword_length - message_length);
+					decoding_info.CandidateCodeWord++;
+					//
+					Systematic_Linear_Block_Code_Encoder(Sorted_G, O_Stack.at(0).message_bits, codeword_seq);
+					for (size_t j(message_length); j < codeword_length; ++j)
+						O_Stack.at(0).metric += Metric_Table._matrix[codeword_seq.at(j)][j];
+					//
+					
+					if (Update_Best_Goal_Segments(O_Stack.at(0), Best_Goal, C_Stack1)) {
+						Update_Stack(Best_Goal, C_Stack2);
+						Update_Stack(Best_Goal, S_Stack1);
+						Update_Stack(Best_Goal, S_Stack2);
+						Update_Stack(Best_Goal, O_Stack);
+					}
+					
+					next_extend(O_Stack.at(0), C_Stack2, O_Stack, Best_Goal, segment_length, message_length, decoding_info);
+					*/
 				}
 				else if ((Child_Node.level < segment_length) && (Child_Node.metric < Best_Goal.metric)) {
 					if (Child_Node.metric != Pointer.metric)
@@ -262,12 +282,31 @@ void A_star_Segment_ver2(MATRIX<__int8>& G, DECODING_INFO& decoding_info)
 			for (__int8 new_bit(0); new_bit < 2; ++new_bit) {
 				Extend_Node_Procedure(Pointer, Child_Node, Metric_Table, new_bit);
 				++decoding_info.STE;
-
+				
 				if ((Child_Node.level == message_length) && (Child_Node.metric < Best_Goal.metric)) {
 					Place_C_Stack(C_Stack2, Child_Node, decoding_info);
-					Combine_Segment_ver2(Combine_node,Child_Node, C_Stack1, O_Stack,Best_Goal, segment_length, decoding_info,
+					Combine_Segment_ver2(Child_Node, C_Stack1, O_Stack,Best_Goal, segment_length, decoding_info,
 						G, Sorted_G, Metric_Table);
-
+					
+					//
+					/*
+					decoding_info.STE += (codeword_length - message_length);
+					decoding_info.CandidateCodeWord++;
+					//
+					Systematic_Linear_Block_Code_Encoder(Sorted_G, O_Stack.at(0).message_bits, codeword_seq);
+					for (size_t j(message_length); j < codeword_length; ++j)
+						O_Stack.at(0).metric += Metric_Table._matrix[codeword_seq.at(j)][j];
+					//
+					
+					if (Update_Best_Goal_Segments(O_Stack.at(0), Best_Goal, C_Stack1)) {
+						Update_Stack(Best_Goal, C_Stack2);
+						Update_Stack(Best_Goal, S_Stack1);
+						Update_Stack(Best_Goal, S_Stack2);
+						Update_Stack(Best_Goal, O_Stack);
+					}
+					
+					next_extend(O_Stack.at(0), C_Stack1, O_Stack, Best_Goal, segment_length, message_length, decoding_info);
+					*/
 				}
 				else if ((Child_Node.level < message_length) && (Child_Node.metric < Best_Goal.metric)) {
 					if (Child_Node.metric != Pointer.metric)
@@ -400,14 +439,18 @@ inline void Combine_Segment(	NODE_PATH &Update_node, vector<NODE_PATH>& C_Stack_
 	}
 }
 
-inline void Combine_Segment_ver2(NODE_PATH & Combine_node,NODE_PATH &Update_node, vector<NODE_PATH> &C_Stack, deque<NODE_PATH>& O_Stack,
+inline void Combine_Segment_ver2(NODE_PATH &Update_node, vector<NODE_PATH> &C_Stack, deque<NODE_PATH>& O_Stack,
 	NODE_PATH &Best_Goal, size_t segment_length,
 	DECODING_INFO& decoding_info, MATRIX<__int8>& G, MATRIX<__int8>& Sorted_G, MATRIX<double>& Metric_Table) {
 	size_t
 		message_length(G.Row_number),
 		codeword_length(G.Col_number),
 		start, end;
-	Combine_node.message_bits.assign(Update_node.message_bits.begin(), Update_node.message_bits.end());
+	NODE_PATH
+		Combine_node(message_length);
+	Combine_node = Update_node;
+	//test(Update_node, Metric_Table);
+	//Combine_node.message_bits.assign(Update_node.message_bits.begin(), Update_node.message_bits.end());
 	if (Update_node.level == message_length) {
 		start = 0, end = segment_length;
 		Combine_node.segment = 2;
@@ -420,6 +463,7 @@ inline void Combine_Segment_ver2(NODE_PATH & Combine_node,NODE_PATH &Update_node
 	for (int j = start; j < end; j++) {
 		Combine_node.message_bits.at(j) = C_Stack.at(0).message_bits.at(j);
 	}
+
 	Combine_node.metric = Update_node.metric + C_Stack.at(0).metric;
 	Combine_node.segment_metric = Update_node.metric;
 	/*
@@ -428,6 +472,7 @@ inline void Combine_Segment_ver2(NODE_PATH & Combine_node,NODE_PATH &Update_node
 	}
 	cout << "metric = " << (double)Combine_node.metric << endl;
 	*/
+
 	Place_O_Stack(O_Stack, Combine_node, decoding_info);
 	
 }
@@ -437,7 +482,7 @@ inline void Combine_Segment_ver2(NODE_PATH & Combine_node,NODE_PATH &Update_node
 inline void Place_C_Stack(vector<NODE_PATH>& Stack, NODE_PATH& child_node, DECODING_INFO& decoding_info)//把node按照順序放入stack
 {
 	int
-		position_number(Stack.size()),
+		position_number(0),
 		Stack_Size(Stack.size());
 	
 	for (int j(Stack_Size - 1); j >= 0; --j) {
@@ -484,6 +529,9 @@ inline void Place_O_Stack(deque<NODE_PATH>& Stack, NODE_PATH& child_node, DECODI
 		Stack.push_front(child_node);
 		--decoding_info.COM;
 	}
+	else if (position_number == Stack_Size) {
+		Stack.push_back(child_node);
+	}
 	else Stack.insert(Stack.begin() + position_number, child_node);
 
 	// If the current capacity of stack is larger than the configured stack size
@@ -512,7 +560,7 @@ inline void Update_Stack(NODE_PATH &Best_Goal, deque<NODE_PATH> &Stack)
 	// First, find out all indexes of deleted nodes
 	int Stack_Size(Stack.size());
 	int n;
-	for (n = (Stack_Size - 1); n >= 0; --n) {
+	for (n = (Stack_Size - 1); n > 0; --n) {	//不刪除 stack.at(0)
 		if (Stack.at(n).auxiliary() <= Best_Goal.metric) {
 			break;
 		}
@@ -553,6 +601,7 @@ inline void next_extend(NODE_PATH& Node, vector<NODE_PATH> &C_Stack, deque<NODE_
 			for (int j = start; j < end; j++) {
 				Node.message_bits.at(j) = C_Stack.at(Node.temp_idx).message_bits.at(j);
 			}
+			
 			for ( ; i < O_Stack.size(); i++) {
 				if (O_Stack.at(i).metric > Node.metric) {
 					break;
@@ -562,6 +611,8 @@ inline void next_extend(NODE_PATH& Node, vector<NODE_PATH> &C_Stack, deque<NODE_
 					decoding_info.COM += i;
 					return;
 				}
+				
+				
 			}
 			if (i > 1) {
 				O_Stack.insert(O_Stack.begin() + i, Node);
@@ -574,4 +625,39 @@ inline void next_extend(NODE_PATH& Node, vector<NODE_PATH> &C_Stack, deque<NODE_
 		}
 	}
 	O_Stack.pop_front();
+	
+}
+inline bool meg_equal(vector<__int8> meg1, vector<__int8> meg2,int len) {
+	for (int i = 0; i < len; i++) {
+		if (meg1.at(i) != meg2.at(i)) return false;
+	}
+	return true;
+}
+
+inline void test(NODE_PATH& node, MATRIX<double>& Metric_Table) {
+	double metric = 0;
+	static int error_count;
+	
+	if (node.level == 10) {
+		for (int i = 5; i < 10; i++) {
+			metric += Metric_Table._matrix[node.message_bits.at(i)][i];
+		}
+	}
+	else {
+		for (int i = 0; i < 5; i++) {
+			metric += Metric_Table._matrix[node.message_bits.at(i)][i];
+		}
+	}
+	/*
+	for (int i = 0; i < 10; i++) {
+		metric += Metric_Table._matrix[node.message_bits.at(i)][i];
+	}
+	*/
+	if (node.metric != metric) {
+		cout << "metric error,count = " << ++error_count << endl;
+		for (auto c : node.message_bits) {
+			cout << (int)c << ",";
+		}
+		cout << endl;
+	}
 }

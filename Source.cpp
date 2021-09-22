@@ -1925,7 +1925,7 @@ void main()
 
 
 						printf(
-							"\n\r Block #%.0f (%.2f %%)"
+							"\r Block #%.0f (%.2f %%)"
 							", Eb #%.0f"
 							", BER¡G%.2e"
 							//", BER67¡G%.2e"
