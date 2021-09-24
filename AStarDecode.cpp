@@ -970,6 +970,52 @@ void Hard_decision_Decoder(MATRIX<__int8> &G, DECODING_INFO &decoding_info) {
 		else  decoding_info.estimated_codeword.at(i) = 0;
 	}
 }
+//Pin
+void Hard_decision_test(MATRIX<__int8> &G, DECODING_INFO &decoding_info) {
+	size_t
+		message_length(G.Row_number),
+		codeword_length(G.Col_number),
+		D_z1 = 0,D_z2 = 0;
+
+	vector <size_t>
+		Location_Index(G.Col_number, 0);
+	vector<__int8>
+		codeword_seq(codeword_length, 0),
+		message_seq(message_length, 0),
+		Hard_RX(codeword_length, 0),
+		Sorted_codeword(codeword_length, 0);
+
+
+	MATRIX<__int8> Sorted_G(G);
+	MATRIX<double> Metric_Table(2, codeword_length);
+	Pre_Procedure(decoding_info.rx_signal_seq, G, Sorted_G, Location_Index, Metric_Table);
+	Sort_Function(decoding_info.code_seq, Location_Index, Sorted_codeword);
+	for (int i = 0; i < decoding_info.rx_signal_seq.size(); ++i) {
+		if (decoding_info.rx_signal_seq.at(i) < 0) decoding_info.estimated_codeword.at(i) = 1;
+		else  decoding_info.estimated_codeword.at(i) = 0;
+	}
+	Sort_Function(decoding_info.estimated_codeword, Location_Index, codeword_seq);
+	//計算每個位子上的錯誤
+	/*
+	for (int i = 0; i < codeword_length; i++) {
+		if (codeword_seq.at(i) != Sorted_codeword.at(i)) {
+			decoding_info.err_count[i] += 1;
+		}
+	}*/
+	for (int i = 0; i < message_length /2; i++) {
+		if (codeword_seq.at(i) != Sorted_codeword.at(i)) {
+			D_z1 += 1;
+		}
+	}
+	for (int i = message_length / 2; i < message_length; i++) {
+		if (codeword_seq.at(i) != Sorted_codeword.at(i)) {
+			D_z2 += 1;
+		}
+	}
+	decoding_info.err_count[D_z1] += 1;
+	decoding_info.err_count[message_length / 2 + D_z2] += 1;
+
+}
 
 void A_star_I(MATRIX<__int8> &G, DECODING_INFO &decoding_info)
 {

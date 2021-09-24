@@ -224,6 +224,7 @@
 //Pin
 #define A_Star_Segment_Orignal			110
 #define A_Star_Segment_Orignal_ver2		111
+#define Hard_test						112
 
 
 

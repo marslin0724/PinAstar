@@ -231,6 +231,8 @@ public:
 	vector<int> Error_Accumulation;
 	bool EarlyTerminate;
 	vector<double> Candidate_Metric;
+	//Pin test
+	size_t err_count[128];
 
 	long double Ave_LLR;
 	int Turbo_Small_Value_Counter;
@@ -467,6 +469,15 @@ public:
 	NODE_PATH Best_Goal;
 	double OSC_metric_thr;
 
+};
+
+class NODE_COMB {
+public:
+	double metric = 0;
+	vector<__int8> codeword_bits;
+	NODE_COMB(int codeword_len) {
+		codeword_bits.assign(codeword_len, 0);
+	}
 };
 
 #endif // !_CLASS_

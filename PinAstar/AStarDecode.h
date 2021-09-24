@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <list>
+#include<forward_list>
 #include<deque>
 #include <algorithm>
 #include <random>
@@ -477,16 +478,26 @@ inline void Pre_Procedure_Segment(DECODING_INFO& decoding_info,
 inline void Combine_Segment(NODE_PATH& Update_node, vector<NODE_PATH>& C_Stack_Update, vector<NODE_PATH>& C_Stack, vector<NODE_PATH>& S_Stack1, vector<NODE_PATH>& S_Stack2,
 	NODE_PATH& Best_Goal, size_t segment_length,
 	DECODING_INFO& decoding_info, MATRIX<__int8>& G, MATRIX<__int8>& Sorted_G, MATRIX<double>& Metric_Table);
-inline void Combine_Segment_ver2(NODE_PATH &Update_node, vector<NODE_PATH> &C_Stack, deque<NODE_PATH>& O_Stack,
+inline void Combine_Segment(NODE_PATH &Update_node, vector<NODE_COMB>& C_Stack_Update, vector<NODE_COMB> &C_Stack, vector<NODE_PATH>& S_Stack1, vector<NODE_PATH>& S_Stack2,
+	NODE_PATH &Best_Goal, size_t segment_length,
+	DECODING_INFO& decoding_info, MATRIX<__int8>& G, MATRIX<__int8>& Sorted_G, MATRIX<double>& Metric_Table);
+inline void Combine_Segment_ver2(NODE_PATH &Update_node, vector<NODE_PATH> &C_Stack, forward_list<NODE_PATH>& O_Stack,
 	NODE_PATH &Best_Goal, size_t segment_length,
 	DECODING_INFO& decoding_info, MATRIX<__int8>& G, MATRIX<__int8>& Sorted_G, MATRIX<double>& Metric_Table);
 
 inline void Place_C_Stack(vector<NODE_PATH>& Stack, NODE_PATH& child_node, DECODING_INFO& decoding_info);
+inline void Place_C_Stack(vector<NODE_COMB>& Stack, NODE_COMB& child_node, DECODING_INFO& decoding_info);
 inline void Update_Stack( NODE_PATH &Best_Goal, vector<NODE_PATH> &Stack);
 inline void Update_Stack(NODE_PATH &Best_Goal, deque<NODE_PATH> &Stack);
+inline void Update_Stack(NODE_PATH &Best_Goal, vector<NODE_COMB> &Stack);
 inline bool Update_Best_Goal_Segments(NODE_PATH &Child_Node, NODE_PATH &Best_Goal, vector<NODE_PATH> &Stack);
-inline void Place_O_Stack(deque<NODE_PATH>& Stack, NODE_PATH& child_node, DECODING_INFO& decoding_info);
-inline void next_extend(NODE_PATH& Node, vector<NODE_PATH> &C_Stack, deque<NODE_PATH>& O_Stack, NODE_PATH &Best_Goal,
+inline void Place_O_Stack(forward_list<NODE_PATH>& Stack, NODE_PATH& child_node, DECODING_INFO& decoding_info);
+inline void next_extend(NODE_PATH& Node, vector<NODE_PATH> &C_Stack, forward_list<NODE_PATH>& O_Stack, NODE_PATH &Best_Goal,
 	int segment_length, int message_length, DECODING_INFO& decoding_info);
 inline bool meg_equal(vector<__int8> meg1, vector<__int8> meg2, int len);
 inline void test(NODE_PATH& node, MATRIX<double>& Metric_Table);
+//Pin test
+
+void Hard_decision_test(MATRIX<__int8> &G, DECODING_INFO &decoding_info);
+
+

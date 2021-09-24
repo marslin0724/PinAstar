@@ -101,6 +101,7 @@ Best_Goal_OSC_Data = "Best_Goal_OSC_Statistic.txt",
 RSS_Data = "RSS_Data.txt";
 
 
+
 // LDPC part
 //LDPC_FUNC LDPC;
 //string H_file = "H_1024_768_z64_196.txt";
@@ -134,6 +135,8 @@ void main()
 	*/
 
 	ClearFile(Complete_Data);
+	//Pin test
+	ClearFile("Hard_test.txt");
 	WriteFile_Parameters(Complete_Data, LinearBlockCode, Operation_Parameter);
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine generator(seed);
@@ -420,6 +423,9 @@ void main()
 	case A_Star_Segment_Orignal_ver2:
 		Decoder = A_star_Segment_ver2;
 		break;
+	case Hard_test:
+		Decoder = Hard_decision_test;
+		break;
 
 		//Test
 	case A_Star_PC_out_CBC_OSC_Test:
@@ -435,6 +441,7 @@ void main()
 			<< "\n Please restart the simulation procedure.";
 		break;
 	}
+	
 
 	// ************************************
 	// *                                  *
@@ -531,6 +538,10 @@ void main()
 			Decoding_info.Dz_21_Number = 0;
 			Decoding_info.Dz_22_Number = 0;
 			Decoding_info.Dz_23_Number = 0;
+			//Pin test
+			for (int i = 0; i < 128; i++) {
+				Decoding_info.err_count[i] = 0;
+			}
 		}
 
 		Show_Current_Time();
@@ -2062,6 +2073,7 @@ void main()
 							WriteFile(Realtime_Data, Decoding_info.CBC_STE / Transmitted_Block / Message_Length);
 							WriteFile(Realtime_Data, (Decoding_info.DM_STE*Decoding_info.CBC_length) / Transmitted_Block / Message_Length);
 							WriteFile(Realtime_Data, "\n\n");
+
 						}
 						/*
 						{
@@ -2150,6 +2162,14 @@ void main()
 			WriteFile(Complete_Data, Decoding_info.CBC_STE / Transmitted_Block / Message_Length);
 			WriteFile(Complete_Data, (Decoding_info.DM_STE*Decoding_info.CBC_length) / Transmitted_Block / Message_Length);
 			WriteFile(Complete_Data, "-----------");
+			//Pin test
+			WriteFile("Hard_test.txt", snr_dB);
+			WriteFile("Hard_test.txt", "-----------");
+			for (int i = 0; i < 128; i++) {
+				WriteFile("Hard_test.txt", Decoding_info.err_count[i]);
+			}
+			WriteFile("Hard_test.txt", "-----------");
+			
 			/*
 			WriteFile(RSS_Data, snr_dB);
 			WriteFile(RSS_Data, (double)Avg_Alpha);
