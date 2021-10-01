@@ -148,6 +148,7 @@
     <ClCompile Include="AStarDecode_DM_III.cpp" />
     <ClCompile Include="AStarDecode_RSS_II.cpp" />
     <ClCompile Include="AStarDecode_RSS_OSC_II.cpp" />
+    <ClCompile Include="AstarDecode_section_RSS.cpp" />
     <ClCompile Include="AstarDecode_segments.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

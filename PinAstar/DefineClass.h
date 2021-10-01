@@ -200,7 +200,10 @@ public:
 
 		// List Decoder
 		SCL_L = 0,
-		Parameter_ReadTxt_Flag = FALSE;
+		Parameter_ReadTxt_Flag = FALSE,
+		//section
+		section1_i = 0,
+		section2_i = 0;
 
 	string Algorithm;
 	size_t block_number = 0;
@@ -296,6 +299,8 @@ public:
 	size_t
 		StackSize = 0,
 		Constraint_i = 0,
+		section1_i = 0,
+		section2_i = 0,
 		Constraint_j = 0,
 		Control_Level = 0,
 		DM_II_StackSize = 0,
@@ -360,6 +365,9 @@ public:
 			Multi_Stack_Size = oper_para.Multi_Stack_Size;
 			Fano_Metric_Parameter = oper_para.Fano_Metric_Parameter;
 			Constraint_i_ratio = oper_para.Constraint_i_ratio;
+			//Pin
+			section1_i = oper_para.section1_i;
+			section2_i = oper_para.section2_i;
 			//Yin
 			//CBC_length = Control_Level-
 		}
@@ -477,6 +485,14 @@ public:
 	vector<__int8> codeword_bits;
 	NODE_COMB(int codeword_len) {
 		codeword_bits.assign(codeword_len, 0);
+	}
+};
+class MD_NODE {
+public:
+	vector<__int8> message_bits;
+	int level = 0;
+	MD_NODE(size_t len) {
+		message_bits.assign(len, 0);
 	}
 };
 

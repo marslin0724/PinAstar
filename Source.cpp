@@ -136,7 +136,7 @@ void main()
 
 	ClearFile(Complete_Data);
 	//Pin test
-	ClearFile("Hard_test.txt");
+	//ClearFile("Hard_test.txt");
 	WriteFile_Parameters(Complete_Data, LinearBlockCode, Operation_Parameter);
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	std::default_random_engine generator(seed);
@@ -426,6 +426,15 @@ void main()
 	case Hard_test:
 		Decoder = Hard_decision_test;
 		break;
+	case MinD_test:
+		Decoder = MD_test;
+		break;
+	case A_Star_Section_PC:
+		Decoder = A_star_section_PC;
+		break;
+	case A_Star_Section_PC_out:
+		Decoder = A_star_section_PC_out;
+		break;
 
 		//Test
 	case A_Star_PC_out_CBC_OSC_Test:
@@ -538,10 +547,11 @@ void main()
 			Decoding_info.Dz_21_Number = 0;
 			Decoding_info.Dz_22_Number = 0;
 			Decoding_info.Dz_23_Number = 0;
+			/*
 			//Pin test
 			for (int i = 0; i < 128; i++) {
 				Decoding_info.err_count[i] = 0;
-			}
+			}*/
 		}
 
 		Show_Current_Time();
@@ -2162,6 +2172,7 @@ void main()
 			WriteFile(Complete_Data, Decoding_info.CBC_STE / Transmitted_Block / Message_Length);
 			WriteFile(Complete_Data, (Decoding_info.DM_STE*Decoding_info.CBC_length) / Transmitted_Block / Message_Length);
 			WriteFile(Complete_Data, "-----------");
+			/*
 			//Pin test
 			WriteFile("Hard_test.txt", snr_dB);
 			WriteFile("Hard_test.txt", "-----------");
@@ -2169,7 +2180,7 @@ void main()
 				WriteFile("Hard_test.txt", Decoding_info.err_count[i]);
 			}
 			WriteFile("Hard_test.txt", "-----------");
-			
+			*/
 			/*
 			WriteFile(RSS_Data, snr_dB);
 			WriteFile(RSS_Data, (double)Avg_Alpha);

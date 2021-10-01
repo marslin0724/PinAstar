@@ -115,6 +115,9 @@ void OPER_PARA::ShowDecoder()
 		<< "\n " << A_Star_Segment_Orignal << ": A* Algorithm using Segment"
 		<< "\n " << A_Star_Segment_Orignal_ver2 << ": A* Algorithm using Segment ver2"
 		<< "\n " << Hard_test << ": Hard_desicion_test"
+		<< "\n " << MinD_test << ": Minimum distance test"
+		<< "\n " << A_Star_Section_PC << ": A_Star_Section_PC"
+		<< "\n " << A_Star_Section_PC_out << ": A_Star_Section_PC_out"
 
 		<< "\n\n *** Other Decoding Algorithm"
 		<< "\n ---------------------------------------------------------------"
@@ -279,7 +282,9 @@ void OPER_PARA::DecodingParameterKeyIn() {
 		(Decoder_Version == A_Star_2_Base_PC_out_CBC_OSC_Adaptive_i_Fano_Sufficient) ||
 		(Decoder_Version == A_Star_2_Base_PC_out_CBC_OSC_Adaptive_i_Parallel_Fano_Sufficient) ||
 		(Decoder_Version == A_Star_2_Base_PC_out_CBC_OSC_Adaptive_i_Fano) ||
-		(Decoder_Version == A_Star_2_Base_PC_out_CBC_OSC_Adaptive_i_Parallel_Fano)
+		(Decoder_Version == A_Star_2_Base_PC_out_CBC_OSC_Adaptive_i_Parallel_Fano) ||
+		(Decoder_Version == A_Star_Section_PC) ||
+		(Decoder_Version == A_Star_Section_PC_out)
 		) {
 		cout << " i = ";
 		cin >> Constraint_i;
@@ -427,6 +432,15 @@ void OPER_PARA::DecodingParameterKeyIn() {
 		) {
 		cout << " Maximum multi-stack size : ";
 		cin >> Multi_Stack_Size;
+	}
+	//section
+	if ((Decoder_Version == A_Star_Section_PC) ||
+		(Decoder_Version == A_Star_Section_PC_out)
+		) {
+		cout << " Section1_i : ";
+		cin >> section1_i;
+		cout << " Section2_i : ";
+		cin >> section2_i;
 	}
 
 	
@@ -845,6 +859,22 @@ void OPER_PARA::DecodingParameterShow() {
 	case  LDPC_Sum_Product_Decoder:
 		cout
 			<< "\n Sum Product Decoding Algorithm: Iteration = " << SPA_Iter;
+		break;
+	case A_Star_Segment_Orignal:
+		cout
+			<< "\n Section Original decoding Algorithm:  " ;
+		break;
+	case A_Star_Section_PC:
+		cout
+			<< "\n A* Section PC-" << section1_i << "-" << section2_i
+			<< "\n section1_i = " << section1_i
+			<< "\n section2_i = " << section2_i;
+		break;
+	case A_Star_Section_PC_out:
+		cout
+			<< "\n A* Section PC-out-" << section1_i << "-" << section2_i
+			<< "\n section1_i = " << section1_i
+			<< "\n section2_i = " << section2_i;
 		break;
 	}
 }

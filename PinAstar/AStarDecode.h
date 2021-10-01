@@ -497,7 +497,11 @@ inline void next_extend(NODE_PATH& Node, vector<NODE_PATH> &C_Stack, forward_lis
 inline bool meg_equal(vector<__int8> meg1, vector<__int8> meg2, int len);
 inline void test(NODE_PATH& node, MATRIX<double>& Metric_Table);
 //Pin test
-
+void MD_test(MATRIX<__int8> &G, DECODING_INFO &decoding_info);
+void compute_MD(size_t& min_d, vector<__int8>& message_bits, MATRIX<__int8> &G);
 void Hard_decision_test(MATRIX<__int8> &G, DECODING_INFO &decoding_info);
+//Pin section RSS
+void A_star_section_PC(MATRIX<__int8>& G, DECODING_INFO& decoding_info);
+void A_star_section_PC_out(MATRIX<__int8>& G, DECODING_INFO& decoding_info);
 
 

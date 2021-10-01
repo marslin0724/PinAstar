@@ -1372,3 +1372,42 @@ void QuickSort(vector<NODE_PATH> &Stack_CBC1, int front, int end, DECODING_INFO 
 		QuickSort(Stack_CBC1, pivot + 1, end, decoding_info);
 	}
 }
+
+//Minimum distance test
+void MD_test(MATRIX<__int8> &G, DECODING_INFO &decoding_info) {
+	size_t sta = pow(2, G.Row_number);
+	vector<MD_NODE> stack;
+	size_t min_d = INT_MAX;
+	stack.reserve(100000);
+	MD_NODE node(G.Row_number);
+	stack.push_back(node);
+	node.message_bits.at(0) ^= 1;
+	stack.push_back(node);
+	while (!stack.empty()) {
+		stack.at(stack.size() - 1).level++;
+		node = stack.at(stack.size() - 1);
+		node.message_bits.at(node.level) ^= 1;
+		if (node.level == G.Row_number -1) {
+			compute_MD(min_d, node.message_bits, G);
+			compute_MD(min_d, stack.at(stack.size() - 1).message_bits, G);
+			stack.pop_back();
+		}
+		else {
+			stack.push_back(node);
+		}
+	}
+	cout << "minmum distance = " << min_d << endl;
+}
+
+void compute_MD(size_t &min_d, vector<__int8> &message_bits, MATRIX<__int8> &G) {
+	vector<__int8> codeword_seq(G.Col_number,0);
+	Systematic_Linear_Block_Code_Encoder(G,message_bits, codeword_seq);
+	int D_z = 0;
+	for (int i = 0; i < G.Col_number; i++) {
+		D_z += codeword_seq.at(i);
+	}
+	if (D_z < min_d && D_z != 0) {
+		min_d = D_z;
+		//cout << "minmum distance = " << min_d << endl;
+	}
+}

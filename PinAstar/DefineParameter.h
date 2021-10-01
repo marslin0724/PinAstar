@@ -225,6 +225,9 @@
 #define A_Star_Segment_Orignal			110
 #define A_Star_Segment_Orignal_ver2		111
 #define Hard_test						112
+#define MinD_test						113
+#define A_Star_Section_PC				114
+#define A_Star_Section_PC_out			115
 
 
 

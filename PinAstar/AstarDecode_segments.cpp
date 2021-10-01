@@ -406,7 +406,7 @@ inline void Combine_Segment(	NODE_PATH &Update_node, vector<NODE_PATH>& C_Stack_
 
 	}
 }
-//改版
+//改版 C_Stacl_Update使用NODE_COMB
 inline void Combine_Segment(NODE_PATH &Update_node, vector<NODE_COMB>& C_Stack_Update, vector<NODE_COMB> &C_Stack, vector<NODE_PATH>& S_Stack1, vector<NODE_PATH>& S_Stack2,
 	NODE_PATH &Best_Goal, size_t segment_length,
 	DECODING_INFO& decoding_info, MATRIX<__int8>& G, MATRIX<__int8>& Sorted_G, MATRIX<double>& Metric_Table) {
@@ -422,6 +422,7 @@ inline void Combine_Segment(NODE_PATH &Update_node, vector<NODE_COMB>& C_Stack_U
 	double metric_bound = Best_Goal.metric - Update_node.metric;
 	Combine_node.codeword_bits.assign(Update_node.message_bits.begin(), Update_node.message_bits.end());
 	Systematic_Linear_Block_Code_Encoder(Sorted_G, Combine_node.codeword_bits, Combine_node.codeword_bits);
+	decoding_info.STE += (codeword_length - message_length);
 	Combine_node.metric = Update_node.metric;
 	Place_C_Stack(C_Stack_Update, Combine_node, decoding_info);
 	for (int i = 0; i < C_Stack.size(); i++) {
@@ -438,7 +439,7 @@ inline void Combine_Segment(NODE_PATH &Update_node, vector<NODE_COMB>& C_Stack_U
 		}
 		cout << "metric = " << (double)Combine_node.metric << endl;
 		*/
-		decoding_info.STE += (codeword_length - message_length);
+		//decoding_info.STE += (codeword_length - message_length);
 		decoding_info.CandidateCodeWord++;
 		//
 		

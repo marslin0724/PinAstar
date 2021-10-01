@@ -113,5 +113,8 @@
     <ClCompile Include="AstarDecode_segments.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
+    <ClCompile Include="AstarDecode_section_RSS.cpp">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
