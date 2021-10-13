@@ -24,3 +24,4 @@ void Col_Addition(MATRIX<__int8> &Matrix, int col1, int col2);
 void Sort_Matrix_Col_Forward(MATRIX<__int8> &Matrix, vector<int> &permutation_seq);
 void G_H_Multiple_Test(MATRIX<__int8> G, MATRIX<__int8> H);
 void Transpose_Matrix(MATRIX<__int8> &H, MATRIX<__int8> &Transpose_H);
+inline void Matrix_Mul(MATRIX<__int8> & M1, MATRIX<__int8> & M2, MATRIX<__int8>& res);

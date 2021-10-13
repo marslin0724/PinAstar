@@ -1378,16 +1378,33 @@ void MD_test(MATRIX<__int8> &G, DECODING_INFO &decoding_info) {
 	size_t sta = pow(2, G.Row_number);
 	vector<MD_NODE> stack;
 	size_t min_d = INT_MAX;
+	size_t tmp_d;
 	stack.reserve(100000);
 	MD_NODE node(G.Row_number);
+	for (int i = 0; i < G.Row_number; i++) {
+		tmp_d = 0;
+		for (int j = 0; j < G.Col_number; j++) {
+			tmp_d += G._matrix[i][j];
+		}
+		if (tmp_d < min_d) min_d = tmp_d;
+	}
 	stack.push_back(node);
 	node.message_bits.at(0) ^= 1;
+	node.D_z++;
 	stack.push_back(node);
 	while (!stack.empty()) {
 		stack.at(stack.size() - 1).level++;
 		node = stack.at(stack.size() - 1);
 		node.message_bits.at(node.level) ^= 1;
-		if (node.level == G.Row_number -1) {
+		node.D_z++;
+		if (node.D_z >= min_d) {
+			if (node.level == G.Row_number - 1) {
+				compute_MD(min_d, stack.at(stack.size() - 1).message_bits, G);
+				stack.pop_back();
+			}
+			continue;
+		}
+		else if (node.level == G.Row_number -1) {
 			compute_MD(min_d, node.message_bits, G);
 			compute_MD(min_d, stack.at(stack.size() - 1).message_bits, G);
 			stack.pop_back();
@@ -1408,6 +1425,6 @@ void compute_MD(size_t &min_d, vector<__int8> &message_bits, MATRIX<__int8> &G) 
 	}
 	if (D_z < min_d && D_z != 0) {
 		min_d = D_z;
-		//cout << "minmum distance = " << min_d << endl;
+		cout << "minmum distance = " << min_d << endl;
 	}
 }

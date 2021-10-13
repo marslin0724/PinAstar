@@ -435,6 +435,12 @@ void main()
 	case A_Star_Section_PC_out:
 		Decoder = A_star_section_PC_out;
 		break;
+	case SPA_A_Star:
+		Decoder  = SPA_A_star;
+		break;
+	case SPA_A_Star_ver2:
+		Decoder = SPA_A_star_ver2;
+		break;
 
 		//Test
 	case A_Star_PC_out_CBC_OSC_Test:

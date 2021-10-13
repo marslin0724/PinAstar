@@ -503,5 +503,9 @@ void Hard_decision_test(MATRIX<__int8> &G, DECODING_INFO &decoding_info);
 //Pin section RSS
 void A_star_section_PC(MATRIX<__int8>& G, DECODING_INFO& decoding_info);
 void A_star_section_PC_out(MATRIX<__int8>& G, DECODING_INFO& decoding_info);
+//SPA + A*
+void SPA_A_star(MATRIX<__int8>& G, DECODING_INFO& decoding_info);
+void SPA_subDecoder(MATRIX<__int8> &H, vector<double> &Rx, double var, size_t SPA_I);
+void SPA_A_star_ver2(MATRIX<__int8>& G, DECODING_INFO& decoding_info);
 
 

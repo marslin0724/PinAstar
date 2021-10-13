@@ -228,6 +228,8 @@
 #define MinD_test						113
 #define A_Star_Section_PC				114
 #define A_Star_Section_PC_out			115
+#define SPA_A_Star						116
+#define SPA_A_Star_ver2					117
 
 
 

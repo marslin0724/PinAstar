@@ -150,6 +150,7 @@
     <ClCompile Include="AStarDecode_RSS_OSC_II.cpp" />
     <ClCompile Include="AstarDecode_section_RSS.cpp" />
     <ClCompile Include="AstarDecode_segments.cpp" />
+    <ClCompile Include="SPA_AStarDecoder.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

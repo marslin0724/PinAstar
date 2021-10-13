@@ -1,17 +1,17 @@
- Decoding Algorithm Simulation for (128,36) BCH Code
+ Decoding Algorithm Simulation for RS_16_9_concat_8_4
 
  -----------------------------------------------------
 
- Start Time : 2021 / 10 / 1 , 14 : 11
+ Start Time : 2021 / 10 / 12 , 15 : 52
 
- The Number of Blocks =  10
- The Number of Symbols =  360
+ The Number of Blocks =  1000000
+ The Number of Symbols =  36000000
  Start SNR [dB] =  2 [dB] ¡÷ Es/N0 [dB] = -3.50907 [dB]
- End SNR [dB] =  2 [dB] ¡÷ Es/N0 [dB] = -3.50907 [dB]
- Step SNR [dB] =  2 [dB]
- Block Step = 1
- Stack Size = 2500
- Error Blocks Threshold = 10
+ End SNR [dB] =  4 [dB] ¡÷ Es/N0 [dB] = -1.50907 [dB]
+ Step SNR [dB] =  0.5 [dB]
+ Block Step = 1000
+ Stack Size = 10000
+ Error Blocks Threshold = 100
 
  -----------------------------------------------------
  1. Eb/N0 [dB]						
@@ -38,31 +38,31 @@
 
 2
 -3.50907
+0.00822917
+0.02925
+38470.9
+3.72186e+06
+14328.4
+0
+147860
+1.68642e+07
 0
 0
-39694.4
-657488
-2.67608e+06
-0
-72328
-1.1886e+06
-0
-0
-2501
+10001
 -----------
 0
 0
 0
 -----------
-0
-0
+0.000430556
+0.002
 0
 0
 0
 0
 -----------
-8.826
-1.24632
+3950.18
+1.01261
 
 
 

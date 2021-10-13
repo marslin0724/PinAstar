@@ -50,7 +50,9 @@
 #define ReedSolomonConcatenated	29
 
 //Pin
-#define BCH_128_36 30
+#define BCH_128_36				30
+#define RSGF2_64_36				31
+#define RS_16_9_concat_8_4		32
 
 // 這邊的LDPC的數字是codeword (n,k), 直接用SPA解(或後面接Astar)
 #define LDPC_256_192                90
@@ -136,3 +138,4 @@ vector<__int8> DefineSets_order3(int i1, int i2, int i3, int m);
 // Short LDPC
 void LDPC_Code_16_12(MATRIX<__int8> &H);
 void Convert_SystematicG_to_H(MATRIX<__int8> &H, MATRIX<__int8> &G);
+inline void Matrix_Mul(MATRIX<__int8> & M1, MATRIX<__int8> & M2, MATRIX<__int8>& res);

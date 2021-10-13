@@ -99,6 +99,10 @@ void CODE::ChooseCode()
 		<< " " << BCH_256_131 << ": (256,131) BCH Code	\n"
 		<< " " << BCH_128_36 << ": (128,36) BCH Code \n"
 
+		<< "\n****** RS Code ***** \n\n"
+		<< " " << RSGF2_64_36 << ": (64,36) RS convert to GF(2)	\n"
+		<< " " << RS_16_9_concat_8_4 << ": RS(16,9,8) concatenated (8,4)HM \n"
+
 		<< " \n****** Others ***** \n\n"
 		<< " " << LDPC_96_48 << ": (96,48) LDPC			\n"
 		<< " " << Polar_120_40 << ": (120,40) Polar Code	\n"
@@ -275,6 +279,26 @@ void CODE::ChooseCode()
 		Title = "(128,36) BCH Code";
 		G.Building_Empty_Matrix(Row_Number, Col_Number);
 		Extended_BCH_Generator_Matrix(G_BCH128_36, G);
+		break;
+	case RSGF2_64_36:
+		Title = "(64,36)Reed-Solomon Code ";
+		ReadFile_GeneratorMatrix("RSGF2_64_36.txt", G);
+		Col_Number = G.Col_number;
+		Row_Number = G.Row_number;
+		MatrixForm_to_Generator(G);
+		break;
+	case RS_16_9_concat_8_4:
+		Title = "RS_16_9_concat_8_4";
+		ReadFile_GeneratorMatrix("RSGF2_64_36.txt", G_Inner);
+		ReadFile_GeneratorMatrix("HM8_4_concatenate.txt", G_);
+		G.Building_Empty_Matrix(G_Inner.Row_number, G_.Col_number);
+		Matrix_Mul(G_Inner, G_, G);
+		G._matrix_inner = G_Inner._matrix;
+		H.Building_Empty_Matrix(4, 8);
+		ReadFile_GeneratorMatrix("HM8_4.txt", H);//讀取H矩陣
+		G._matrix_outer = H._matrix;
+		Col_Number = G.Col_number;
+		Row_Number = G.Row_number;
 		break;
 	case ReadFromTxt:
 		Title = "Read From .txt";
@@ -1962,4 +1986,23 @@ void Convert_SystematicG_to_H(MATRIX<__int8> &H, MATRIX<__int8> &G){
 	for (int pivot = 0; pivot < parity_num; pivot++) {
 		H._matrix[pivot][pivot + G.Row_number] = 1;
 	}
+}
+
+inline void Matrix_Mul(MATRIX<__int8> & M1, MATRIX<__int8> & M2, MATRIX<__int8>& res) {
+	if (M1.Col_number != M2.Row_number || !(M1.Row_number == res.Row_number)
+		|| !(M2.Col_number == res.Col_number)) {
+		cout << "Matrix_Mul error";
+		return;
+	}
+	int tmp;
+	for (int i = 0; i < M1.Row_number; i++) {
+		for (int j = 0; j < M2.Col_number; j++) {
+			tmp = 0;
+			for (int k = 0; k < M1.Col_number; k++) {
+				tmp ^= M1._matrix[i][k] * M2._matrix[k][j];
+			}
+			res._matrix[i][j] = tmp;
+		}
+	}
+	
 }

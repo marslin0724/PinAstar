@@ -370,3 +370,21 @@ void Transpose_Matrix(MATRIX<__int8> &H, MATRIX<__int8> &Transpose_H) {
 		}
 	}
 }
+
+inline void Matrix_Mul(MATRIX<__int8> & M1, MATRIX<__int8> & M2, MATRIX<__int8>& res) {
+	if (M1.Col_number != M2.Row_number || !(M1.Row_number == res.Row_number)
+		|| !(M2.Col_number == res.Col_number)) {
+		cout << "Matrix_Mul error";
+		return ;
+	}
+	int tmp;
+	for (int i = 0; i < M1.Row_number; i++) {
+		for (int j = 0; j < M2.Col_number; j++) {
+			tmp = 0;
+			for (int k = 0; k < M1.Col_number; k++) {
+				tmp ^= M1._matrix[i][k] * M2._matrix[k][j];
+			}
+			res._matrix[i][j] = tmp;
+		}
+	}
+}

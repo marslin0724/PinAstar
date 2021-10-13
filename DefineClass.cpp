@@ -118,6 +118,8 @@ void OPER_PARA::ShowDecoder()
 		<< "\n " << MinD_test << ": Minimum distance test"
 		<< "\n " << A_Star_Section_PC << ": A_Star_Section_PC"
 		<< "\n " << A_Star_Section_PC_out << ": A_Star_Section_PC_out"
+		<< "\n " << SPA_A_Star << ": SPA decoder + A*"
+		<< "\n " << SPA_A_Star_ver2 << ":SPA decoder + A* version2"
 
 		<< "\n\n *** Other Decoding Algorithm"
 		<< "\n ---------------------------------------------------------------"
@@ -441,6 +443,11 @@ void OPER_PARA::DecodingParameterKeyIn() {
 		cin >> section1_i;
 		cout << " Section2_i : ";
 		cin >> section2_i;
+	}
+	if (Decoder_Version == SPA_A_Star ||
+		Decoder_Version == SPA_A_Star_ver2) {
+		cout << "SPA_iteration :";
+		cin >> SPA_I;
 	}
 
 	
@@ -875,6 +882,12 @@ void OPER_PARA::DecodingParameterShow() {
 			<< "\n A* Section PC-out-" << section1_i << "-" << section2_i
 			<< "\n section1_i = " << section1_i
 			<< "\n section2_i = " << section2_i;
+		break;
+	case SPA_A_Star:
+		cout << "\n SPA_A*:";
+		break;
+	case SPA_A_Star_ver2:
+		cout << "\n SPA_A* version2" << ",SPA_Iteration = " << SPA_I;
 		break;
 	}
 }

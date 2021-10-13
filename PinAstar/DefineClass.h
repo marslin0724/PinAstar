@@ -19,6 +19,8 @@ private:
 	void Delete_Matrix(void);
 public:
 	std::vector< std::vector<T> > _matrix;
+	std::vector< std::vector<T> > _matrix_inner;
+	std::vector< std::vector<T> > _matrix_outer;
 	size_t Col_number = 0, Row_number = 0;
 	
 	// Functions for class MATRIX
@@ -176,7 +178,8 @@ public:
 		ErrorBlock_Thr = 0,
 		BlockStep = 0,
 		Decoder_Version = 0,
-
+		//SPA
+		SPA_I = 0,
 		// Memory Reduction
 		Constraint_i = 0,	// MRIP constraint
 
@@ -312,7 +315,9 @@ public:
 		MaxUsed_Stack = 0,
 		Reached_Goal_Node = 0,
 		Worst_Case_Candidate = 0,
-		Number_of_the_last_symbols = 0;
+		Number_of_the_last_symbols = 0,
+		//
+		SPA_I = 0;
 		
 	double
 		Alpha = 0, // which is used in A*-Parity-f 
@@ -368,6 +373,7 @@ public:
 			//Pin
 			section1_i = oper_para.section1_i;
 			section2_i = oper_para.section2_i;
+			SPA_I = oper_para.SPA_I;
 			//Yin
 			//CBC_length = Control_Level-
 		}
@@ -491,6 +497,7 @@ class MD_NODE {
 public:
 	vector<__int8> message_bits;
 	int level = 0;
+	size_t D_z = 0;
 	MD_NODE(size_t len) {
 		message_bits.assign(len, 0);
 	}
