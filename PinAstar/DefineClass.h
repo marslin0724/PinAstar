@@ -206,7 +206,9 @@ public:
 		Parameter_ReadTxt_Flag = FALSE,
 		//section
 		section1_i = 0,
-		section2_i = 0;
+		section2_i = 0,
+		N_section;
+			
 
 	string Algorithm;
 	size_t block_number = 0;
@@ -317,7 +319,9 @@ public:
 		Worst_Case_Candidate = 0,
 		Number_of_the_last_symbols = 0,
 		//
-		SPA_I = 0;
+		SPA_I = 0,
+		N_section;
+		
 		
 	double
 		Alpha = 0, // which is used in A*-Parity-f 
@@ -373,6 +377,7 @@ public:
 			//Pin
 			section1_i = oper_para.section1_i;
 			section2_i = oper_para.section2_i;
+			N_section = oper_para.N_section;
 			SPA_I = oper_para.SPA_I;
 			//Yin
 			//CBC_length = Control_Level-

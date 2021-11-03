@@ -1002,6 +1002,8 @@ void Hard_decision_test(MATRIX<__int8> &G, DECODING_INFO &decoding_info) {
 			decoding_info.err_count[i] += 1;
 		}
 	}*/
+	//section test
+	/*
 	for (int i = 0; i < message_length /2; i++) {
 		if (codeword_seq.at(i) != Sorted_codeword.at(i)) {
 			D_z1 += 1;
@@ -1014,6 +1016,14 @@ void Hard_decision_test(MATRIX<__int8> &G, DECODING_INFO &decoding_info) {
 	}
 	decoding_info.err_count[D_z1] += 1;
 	decoding_info.err_count[message_length / 2 + D_z2] += 1;
+	*/ 
+	//MRIP test
+	for (int i = 0; i < message_length ; i++) {
+		if (codeword_seq.at(i) != Sorted_codeword.at(i)) {
+			D_z1 += 1;
+		}
+	}
+	decoding_info.err_count[D_z1] += 1;
 
 }
 

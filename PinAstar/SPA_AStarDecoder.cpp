@@ -27,7 +27,7 @@ void SPA_A_star(MATRIX<__int8>& G, DECODING_INFO& decoding_info) {
 			subRx.at(j) = decoding_info.rx_signal_seq.at(G_.Col_number + start + j - H.Col_number + H.Row_number);
 		}
 		//SPA iteration
-		SPA_subDecoder(H, subRx, decoding_info.var,decoding_info.SPA_I);
+		SPA_subDecoder2(H, subRx, decoding_info.var,decoding_info.SPA_I);
 		start = i * (H.Col_number - H.Row_number);
 		for (j = 0; j < H.Col_number - H.Row_number; j++) {
 			Rx.at(start + j) = subRx.at(j);
@@ -194,7 +194,7 @@ void SPA_A_star_ver2(MATRIX<__int8>& G, DECODING_INFO& decoding_info) {
 			subRx.at(j) = decoding_info.rx_signal_seq.at(G_.Col_number + start + j- H.Col_number + H.Row_number);
 		}
 		//SPA iteration
-		SPA_subDecoder(H, subRx, decoding_info.var,decoding_info.SPA_I);
+		SPA_subDecoder2(H, subRx, decoding_info.var,decoding_info.SPA_I);
 		start = i * (H.Col_number - H.Row_number);
 		for (j = 0; j < H.Col_number - H.Row_number; j++) {
 			Rx.at(start + j) = subRx.at(j);
@@ -213,3 +213,262 @@ void SPA_A_star_ver2(MATRIX<__int8>& G, DECODING_INFO& decoding_info) {
 	A_star_I(G, decoding_info);
 	decoding_info.rx_signal_seq = tmp_Rx;
 }
+
+void SPA_subDecoder2(MATRIX<__int8> &H, vector<double> &Rx, double var, size_t SPA_I) {
+
+	// Change into Channel LLR value
+	for (int i = 0; i < Rx.size(); i++) Rx.at(i) *= (2 / var);
+	vector < vector <double> > M, Eji;
+	vector <double> Li, zi;
+	int I_count = 0, Col = H.Col_number, Row = H.Row_number;
+	double m_temp;
+	vector<__int8> Current_Result(Col, 0), New_Result(Col, 0);
+
+	//cout << Col << Row << endl;
+	//system("pause");
+
+	vector<double> vect(Rx.size(), 0);   // for template container
+
+	for (int i = 0; i < Col; i++) {
+		vect.at(i) = (Rx.at(i));
+	}
+	for (int j = 0; j < Row; j++) {
+		M.push_back(vect);
+	}
+	vect.clear();
+
+	while (TRUE)
+	{
+
+		for (int j = 0; j < Row; j++) {
+
+			for (int i = 0; i < Col; i++) {
+
+				if (H._matrix[j][i] == 1) {
+					double ta = 1;
+
+					for (int k = 0; k < Col; k++) {
+
+						if (H._matrix[j][k] == 1 && k != i) {
+							ta *= tanh(M[j][k] / 2);
+						}
+					}
+					vect.push_back(log((1 + ta) / (1 - ta)));
+				}
+				else vect.push_back(NULL);
+			}
+			Eji.push_back(vect);
+			vect.clear();
+		}
+
+		for (int i = 0; i < Col; i++) {
+			Li.push_back(Rx[i]);
+			for (int j = 0; j < Row; j++) {
+				if (Eji[j][i] != NULL) Li[i] = Li[i] + Eji[j][i];
+			}
+			if (Li.at(i) > 0) New_Result.at(i) = 0;
+			else New_Result.at(i) = 1;
+		}
+
+		
+
+		
+		if (I_count > SPA_I) {
+			for (int i = 0; i < Col; ++i) {
+				Rx.at(i) = Li.at(i);
+			}
+			break;
+		}
+		// End
+
+		I_count++;
+		M.clear();
+		for (int i = 0; i < Row; i++) {
+			for (int j = 0; j < Col; j++) {
+				m_temp = Rx[j];
+				if (H._matrix[i][j] == 1) {
+					for (int k = 0; k < Row; k++) {
+						if (k != i && H._matrix[k][j] == 1) {
+							m_temp = m_temp + Eji[k][j];
+						}
+					}
+					vect.push_back(m_temp);
+				}
+				else vect.push_back(NULL);
+
+			}
+			M.push_back(vect);
+			vect.clear();
+		}
+		Eji.clear();
+		Li.clear();
+		zi.clear();
+	}
+}
+
+void SPA_LLR(MATRIX<__int8> &G, DECODING_INFO &decoding_info) {
+	static double Avg_LLR[51];
+	static int count;
+	count++;
+	ClearFile("LLR.txt");
+	vector<double> R_temp;
+	if (decoding_info.Return_Est_1_or_LLR_0 == 0) R_temp = decoding_info.rx_signal_seq;
+	// Change into Channel LLR value
+	for (int i = 0; i < decoding_info.rx_signal_seq.size(); i++) decoding_info.rx_signal_seq.at(i) *= (2 / decoding_info.var);
+	//建立H矩陣
+	MATRIX<__int8> H;
+	H.Building_Empty_Matrix(G.Col_number - G.Row_number, G.Col_number);
+	H._matrix = G._matrix_outer;
+	vector < vector <double> > M, Eji;
+	vector <double> Li, zi;
+	int I_count = 0, Col = H.Col_number, Row = H.Row_number;
+	double m_temp;
+	long double temp;
+	vector<__int8> Current_Result(Col, 0), New_Result(Col, 0);
+
+	//cout << "Hi";
+	//cout << Col << Row << endl;
+	//system("pause");
+
+	vector<double> vect(decoding_info.rx_signal_seq.size(), 0);   // for template container
+
+	for (int i = 0; i < Col; i++) {
+		vect.at(i) = (decoding_info.rx_signal_seq.at(i));
+	}
+	for (int j = 0; j < Row; j++) {
+		M.push_back(vect);
+	}
+	vect.clear();
+
+	while (TRUE)
+	{
+
+		for (int j = 0; j < Row; j++) {
+
+			for (int i = 0; i < Col; i++) {
+
+				if (H._matrix[j][i] == 1) {
+					double ta = 1;
+
+					for (int k = 0; k < Col; k++) {
+
+						if (H._matrix[j][k] == 1 && k != i) {
+							ta *= tanh(M[j][k] / 2);
+						}
+					}
+					temp = log((1 + ta) / (1 - ta));
+					if (abs(temp) > LLR_MAX) vect.push_back(temp > 0 ? LLR_MAX : (-1)*LLR_MAX);
+					else vect.push_back(temp);
+				}
+				else vect.push_back(NULL);
+			}
+			Eji.push_back(vect);
+			vect.clear();
+		}
+
+		for (int i = 0; i < Col; i++) {
+			Li.push_back(decoding_info.rx_signal_seq[i]);
+			//Li.push_back(0);
+			for (int j = 0; j < Row; j++) {
+				if (Eji[j][i] != NULL) Li[i] = Li[i] + Eji[j][i];
+			}
+			if (Li.at(i) > 0) New_Result.at(i) = 0;
+			else New_Result.at(i) = 1;
+		}
+
+		// jump out of the loop (finished)
+
+		if (New_Result != Current_Result) {
+			if (Diff_Candidate_Test) {
+
+			}
+			//cout << I_count << endl;
+			bool Breaker = TRUE;
+			int temp;
+			Current_Result = New_Result;
+			for (int i = 0; i < Row; ++i) {
+				temp = 0;
+				for (int j = 0; j < Col; ++j) {
+					temp ^= (Current_Result.at(j)&H._matrix[i][j]);
+				}
+				if (temp == 1) {
+					Breaker = FALSE;
+					break;
+				}
+			}
+			if (LDPC_H_Check_Equation && Breaker == TRUE) {
+				if (decoding_info.Return_Est_1_or_LLR_0 == 1) {  // Return Hard Rx
+					for (int i = 0; i < Col; ++i) {
+						if (Li.at(i) > 0) decoding_info.estimated_codeword.at(i) = 0;
+						else decoding_info.estimated_codeword.at(i) = 1;
+					}
+				}
+				else {                                           // Return LLR
+					for (int i = 0; i < Col; ++i) {
+						decoding_info.rx_signal_seq.at(i) = Li.at(i)*(decoding_info.var / 2);
+					}
+					//cout << "!";
+				}
+				//cout << "Success!" << endl;
+				break;
+			}
+		}
+
+		if (I_count > SPA_Iter) {
+			if (decoding_info.Return_Est_1_or_LLR_0 == 1) {      // Return Hard Rx
+				for (int i = 0; i < Col; ++i) {
+					if (Li.at(i) > 0) decoding_info.estimated_codeword.at(i) = 0;
+					else decoding_info.estimated_codeword.at(i) = 1;
+				}
+			}
+			else {                                               // Return LLR
+				decoding_info.rx_signal_seq = R_temp;
+
+				for (int i = 0; i < Col; ++i) {
+					decoding_info.rx_signal_seq.at(i) = Li.at(i)*(decoding_info.var / 2);
+				}
+				//cout << "!";
+			}
+			//cout << "Failed!" << endl;
+			break;
+		}
+		// End
+
+		I_count++;
+		//計算平均LLR
+		
+			for (int i = 0; i < G.Row_number; i++) {
+				Avg_LLR[I_count] += abs(Li.at(i));
+			}
+		
+
+		M.clear();
+		for (int i = 0; i < Row; i++) {
+			for (int j = 0; j < Col; j++) {
+				m_temp = decoding_info.rx_signal_seq[j];
+				if (H._matrix[i][j] == 1) {
+					for (int k = 0; k < Row; k++) {
+						if (k != i && H._matrix[k][j] == 1) {
+							m_temp = m_temp + Eji[k][j];
+						}
+					}
+					vect.push_back(m_temp);
+				}
+				else vect.push_back(NULL);
+
+			}
+			M.push_back(vect);
+			vect.clear();
+		}
+		Eji.clear();
+		Li.clear();
+		zi.clear();
+	}
+	WriteFile("LLR.txt", "Avg_LLR");
+	WriteFile("LLR.txt", "-----------");
+	for (int i = 0; i < 21; i++) {
+		WriteFile("LLR.txt", Avg_LLR[i]/count/G.Row_number);
+	}
+	WriteFile("Hard_test.txt", "-----------");
+}
+

@@ -119,7 +119,13 @@ void OPER_PARA::ShowDecoder()
 		<< "\n " << A_Star_Section_PC << ": A_Star_Section_PC"
 		<< "\n " << A_Star_Section_PC_out << ": A_Star_Section_PC_out"
 		<< "\n " << SPA_A_Star << ": SPA decoder + A*"
-		<< "\n " << SPA_A_Star_ver2 << ":SPA decoder + A* version2"
+		<< "\n " << SPA_A_Star_ver2 << ": SPA decoder + A* version2"
+		<< "\n " << A_Star_N_Section << ": A* N Section decoder"
+		<< "\n " << A_Star_5_Stack << ": A* 5 Stack"
+		<< "\n " << A_Star_6_Stack << ": A* 6 Stack"
+		<< "\n " << A_Star_7_Stack << ": A* 7 Stack"
+		<< "\n " << SPA_AvgLLR        << ": SPA Average LLR"
+		<< "\n " << A_Star_Rep        << ": A* repeation"
 
 		<< "\n\n *** Other Decoding Algorithm"
 		<< "\n ---------------------------------------------------------------"
@@ -436,6 +442,10 @@ void OPER_PARA::DecodingParameterKeyIn() {
 		cin >> Multi_Stack_Size;
 	}
 	//section
+	if (Decoder_Version == A_Star_N_Section) {
+		cout << "N_Section : ";
+		cin >> N_section;
+	}
 	if ((Decoder_Version == A_Star_Section_PC) ||
 		(Decoder_Version == A_Star_Section_PC_out)
 		) {
@@ -888,6 +898,21 @@ void OPER_PARA::DecodingParameterShow() {
 		break;
 	case SPA_A_Star_ver2:
 		cout << "\n SPA_A* version2" << ",SPA_Iteration = " << SPA_I;
+		break;
+	case A_Star_N_Section:
+		cout << "\n A* " << N_section << "-Section ";
+		break;
+	case A_Star_5_Stack:
+		cout << "\n A* 5 Stack ";
+		break;
+	case A_Star_6_Stack:
+		cout << "\n A* 6 Stack ";
+		break;
+	case A_Star_7_Stack:
+		cout << "\n A* 7 Stack ";
+		break;
+	case A_Star_Rep:
+		cout << "\n A* repeatition";
 		break;
 	}
 }

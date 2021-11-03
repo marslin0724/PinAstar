@@ -253,12 +253,11 @@ void A_star_3_stack(MATRIX<__int8> &Sorted_G, MATRIX<double> &Metric_Table, vect
 	} while (!Stack.empty());
 	Pre_Best_Goal = Best_Goal;
 }
-
-void A_star_4_stack(MATRIX<__int8> &G, MATRIX<double> &Metric_Table, vector<__int8> &Hard_RX, vector<__int8> &MRIP_codeword, NODE_PATH &Node, NODE_PATH &Pre_Best_Goal, size_t pc_i, DECODING_INFO &decoding_info)
+void A_star_4_stack(MATRIX<__int8> &Sorted_G, MATRIX<double> &Metric_Table, vector<__int8> &Hard_RX, vector<__int8> &MRIP_codeword, NODE_PATH &Node, NODE_PATH &Pre_Best_Goal, size_t pc_i, DECODING_INFO &decoding_info)
 {
 	size_t
-		message_length(G.Row_number),
-		codeword_length(G.Col_number);
+		message_length(Sorted_G.Row_number),
+		codeword_length(Sorted_G.Col_number);
 
 	vector <__int8>
 		codeword_seq(codeword_length, 0),
@@ -273,18 +272,18 @@ void A_star_4_stack(MATRIX<__int8> &G, MATRIX<double> &Metric_Table, vector<__in
 
 	do
 	{
-		Pointer = Stack[0];
-		Stack.erase(Stack.begin());
+		Pointer = Stack.at(0);
 
 		if ((Pointer.level == message_length) && (Pointer.D_z <= pc_i)) {
+			Stack.erase(Stack.begin());
 			//
-			//Systematic_Linear_Block_Code_Encoder(G, Pointer.message_bits, codeword_seq);
+			//Systematic_Linear_Block_Code_Encoder(Sorted_G, Pointer.message_bits, codeword_seq);
 
 			codeword_seq = MRIP_codeword;
 			for (size_t index(0); index < Pointer.Diff_Index.size(); ++index) {
 				codeword_seq.at(Pointer.Diff_Index.at(index)) ^= 1;
 				for (size_t j(message_length); j < codeword_length; ++j) {
-					codeword_seq.at(j) ^= G._matrix[Pointer.Diff_Index.at(index)][j];
+					codeword_seq.at(j) ^= Sorted_G._matrix[Pointer.Diff_Index.at(index)][j];
 				}
 			}
 
@@ -294,36 +293,201 @@ void A_star_4_stack(MATRIX<__int8> &G, MATRIX<double> &Metric_Table, vector<__in
 					if (Pointer.metric >= Best_Goal.metric) break;
 				}
 			}
-
+			//
 			decoding_info.STE += (codeword_length - message_length);
-			decoding_info.CandidateCodeWord++;
-
+			++decoding_info.CandidateCodeWord;
+			//
 			Update_Best_Goal_Procedure(Pointer, Best_Goal, Stack);
 		}
 		else if ((Pointer.level < message_length) && (Pointer.D_z < pc_i)) {
 
 			decoding_info.STE += 2;
-			for (__int8 new_bit(0); new_bit < 2; new_bit++) {
+			for (__int8 new_bit(0); new_bit < 2; ++new_bit) {
+
 				Extend_Node_Procedure(Pointer, Child_Node, Metric_Table, new_bit);
-				if (new_bit != Hard_RX[Pointer.level]) {
+				if (new_bit != Hard_RX.at(Pointer.level)) {
 					++Child_Node.D_z;
 					Child_Node.Diff_Index.push_back(Pointer.level);
 				}
-				if ((Child_Node.metric < Best_Goal.metric))
-					Place_Node(Stack, Child_Node, decoding_info);
+				if ((Child_Node.metric < Best_Goal.metric)) {
+					if (Pointer.metric != Child_Node.metric)
+						Place_Node(Stack, Child_Node, decoding_info);
+					else {
+						Stack.at(0) = Child_Node;
+						decoding_info.COM++;
+					}
+				}
 			}
 		}
 		else if ((Pointer.level < message_length) && (Pointer.D_z == pc_i)) {
 			Stack.erase(Stack.begin());
+			//
 			Best_Goal_2 = Best_Goal;
-			A_star_3_stack(G, Metric_Table, Hard_RX, MRIP_codeword, Pointer, Best_Goal_2, pc_i + 1, decoding_info);
+			A_star_3_stack(Sorted_G, Metric_Table, Hard_RX, MRIP_codeword, Pointer, Best_Goal_2, pc_i + 1, decoding_info);
+			//
 			Update_Best_Goal_Procedure(Best_Goal_2, Best_Goal, Stack);
 		}
 
 	} while (!Stack.empty());
-
 	Pre_Best_Goal = Best_Goal;
 }
+void A_star_5_stack(MATRIX<__int8> &Sorted_G, MATRIX<double> &Metric_Table, vector<__int8> &Hard_RX, vector<__int8> &MRIP_codeword, NODE_PATH &Node, NODE_PATH &Pre_Best_Goal, size_t pc_i, DECODING_INFO &decoding_info)
+{
+	size_t
+		message_length(Sorted_G.Row_number),
+		codeword_length(Sorted_G.Col_number);
+
+	vector <__int8>
+		codeword_seq(codeword_length, 0),
+		message_seq(message_length, 0);
+
+	NODE_PATH
+		Pointer(message_length),
+		Best_Goal(Pre_Best_Goal),
+		Best_Goal_2(Pre_Best_Goal),
+		Child_Node(message_length);
+	vector<NODE_PATH> Stack(1, Node);
+
+	do
+	{
+		Pointer = Stack.at(0);
+
+		if ((Pointer.level == message_length) && (Pointer.D_z <= pc_i)) {
+			Stack.erase(Stack.begin());
+			//
+			//Systematic_Linear_Block_Code_Encoder(Sorted_G, Pointer.message_bits, codeword_seq);
+
+			codeword_seq = MRIP_codeword;
+			for (size_t index(0); index < Pointer.Diff_Index.size(); ++index) {
+				codeword_seq.at(Pointer.Diff_Index.at(index)) ^= 1;
+				for (size_t j(message_length); j < codeword_length; ++j) {
+					codeword_seq.at(j) ^= Sorted_G._matrix[Pointer.Diff_Index.at(index)][j];
+				}
+			}
+
+			for (size_t j(message_length); j < codeword_length; ++j) {
+				if (codeword_seq.at(j) != Hard_RX.at(j)) {
+					Pointer.metric += Metric_Table._matrix[codeword_seq[j]][j];
+					if (Pointer.metric >= Best_Goal.metric) break;
+				}
+			}
+			//
+			decoding_info.STE += (codeword_length - message_length);
+			++decoding_info.CandidateCodeWord;
+			//
+			Update_Best_Goal_Procedure(Pointer, Best_Goal, Stack);
+		}
+		else if ((Pointer.level < message_length) && (Pointer.D_z < pc_i)) {
+
+			decoding_info.STE += 2;
+			for (__int8 new_bit(0); new_bit < 2; ++new_bit) {
+
+				Extend_Node_Procedure(Pointer, Child_Node, Metric_Table, new_bit);
+				if (new_bit != Hard_RX.at(Pointer.level)) {
+					++Child_Node.D_z;
+					Child_Node.Diff_Index.push_back(Pointer.level);
+				}
+				if ((Child_Node.metric < Best_Goal.metric)) {
+					if (Pointer.metric != Child_Node.metric)
+						Place_Node(Stack, Child_Node, decoding_info);
+					else {
+						Stack.at(0) = Child_Node;
+						decoding_info.COM++;
+					}
+				}
+			}
+		}
+		else if ((Pointer.level < message_length) && (Pointer.D_z == pc_i)) {
+			Stack.erase(Stack.begin());
+			//
+			Best_Goal_2 = Best_Goal;
+			A_star_4_stack(Sorted_G, Metric_Table, Hard_RX, MRIP_codeword, Pointer, Best_Goal_2, pc_i + 1, decoding_info);
+			//
+			Update_Best_Goal_Procedure(Best_Goal_2, Best_Goal, Stack);
+		}
+
+	} while (!Stack.empty());
+	Pre_Best_Goal = Best_Goal;
+}
+void A_star_6_stack(MATRIX<__int8> &Sorted_G, MATRIX<double> &Metric_Table, vector<__int8> &Hard_RX, vector<__int8> &MRIP_codeword, NODE_PATH &Node, NODE_PATH &Pre_Best_Goal, size_t pc_i, DECODING_INFO &decoding_info)
+{
+	size_t
+		message_length(Sorted_G.Row_number),
+		codeword_length(Sorted_G.Col_number);
+
+	vector <__int8>
+		codeword_seq(codeword_length, 0),
+		message_seq(message_length, 0);
+
+	NODE_PATH
+		Pointer(message_length),
+		Best_Goal(Pre_Best_Goal),
+		Best_Goal_2(Pre_Best_Goal),
+		Child_Node(message_length);
+	vector<NODE_PATH> Stack(1, Node);
+
+	do
+	{
+		Pointer = Stack.at(0);
+
+		if ((Pointer.level == message_length) && (Pointer.D_z <= pc_i)) {
+			Stack.erase(Stack.begin());
+			//
+			//Systematic_Linear_Block_Code_Encoder(Sorted_G, Pointer.message_bits, codeword_seq);
+
+			codeword_seq = MRIP_codeword;
+			for (size_t index(0); index < Pointer.Diff_Index.size(); ++index) {
+				codeword_seq.at(Pointer.Diff_Index.at(index)) ^= 1;
+				for (size_t j(message_length); j < codeword_length; ++j) {
+					codeword_seq.at(j) ^= Sorted_G._matrix[Pointer.Diff_Index.at(index)][j];
+				}
+			}
+
+			for (size_t j(message_length); j < codeword_length; ++j) {
+				if (codeword_seq.at(j) != Hard_RX.at(j)) {
+					Pointer.metric += Metric_Table._matrix[codeword_seq[j]][j];
+					if (Pointer.metric >= Best_Goal.metric) break;
+				}
+			}
+			//
+			decoding_info.STE += (codeword_length - message_length);
+			++decoding_info.CandidateCodeWord;
+			//
+			Update_Best_Goal_Procedure(Pointer, Best_Goal, Stack);
+		}
+		else if ((Pointer.level < message_length) && (Pointer.D_z < pc_i)) {
+
+			decoding_info.STE += 2;
+			for (__int8 new_bit(0); new_bit < 2; ++new_bit) {
+
+				Extend_Node_Procedure(Pointer, Child_Node, Metric_Table, new_bit);
+				if (new_bit != Hard_RX.at(Pointer.level)) {
+					++Child_Node.D_z;
+					Child_Node.Diff_Index.push_back(Pointer.level);
+				}
+				if ((Child_Node.metric < Best_Goal.metric)) {
+					if (Pointer.metric != Child_Node.metric)
+						Place_Node(Stack, Child_Node, decoding_info);
+					else {
+						Stack.at(0) = Child_Node;
+						decoding_info.COM++;
+					}
+				}
+			}
+		}
+		else if ((Pointer.level < message_length) && (Pointer.D_z == pc_i)) {
+			Stack.erase(Stack.begin());
+			//
+			Best_Goal_2 = Best_Goal;
+			A_star_5_stack(Sorted_G, Metric_Table, Hard_RX, MRIP_codeword, Pointer, Best_Goal_2, pc_i + 1, decoding_info);
+			//
+			Update_Best_Goal_Procedure(Best_Goal_2, Best_Goal, Stack);
+		}
+
+	} while (!Stack.empty());
+	Pre_Best_Goal = Best_Goal;
+}
+
 
 void A_star_PC(MATRIX<__int8> &G, DECODING_INFO &decoding_info)
 {
@@ -819,6 +983,310 @@ void A_star_4_stack(MATRIX<__int8> &G, DECODING_INFO &decoding_info)
 			Stack.erase(Stack.begin());
 			Best_Goal_2 = Best_Goal;
 			A_star_3_stack(Sorted_G, Metric_Table, Hard_RX, MRIP_codeword, Pointer, Best_Goal_2, (size_t)(1 + 1), decoding_info);
+			Update_Best_Goal_Procedure(Best_Goal_2, Best_Goal, Stack);
+		}
+	} while (!Stack.empty());
+
+	//
+	Systematic_Linear_Block_Code_Encoder(Sorted_G, Best_Goal.message_bits, codeword_seq);
+	Desort_Function(Location_Index, codeword_seq, decoding_info.estimated_codeword);
+
+	//
+	decoding_info.STE = decoding_info.STE / (double)message_length;
+	decoding_info.COM = decoding_info.COM / (double)message_length;
+
+	//
+	if (decoding_info.STE > decoding_info.Worst_Case_STE)
+		decoding_info.Worst_Case_STE = decoding_info.STE;
+}
+
+void A_star_5_stack(MATRIX<__int8> &G, DECODING_INFO &decoding_info)
+{
+	size_t
+		message_length(G.Row_number),
+		codeword_length(G.Col_number);
+
+	vector <size_t>
+		Location_Index(G.Col_number, 0);
+	vector<__int8>
+		codeword_seq(codeword_length, 0),
+		message_seq(message_length, 0),
+		Hard_RX(codeword_length, 0),
+		MRIP_codeword(codeword_length, 0);
+
+	MATRIX<__int8> Sorted_G(G);
+	MATRIX<double> Metric_Table(2, codeword_length);
+
+	NODE_PATH
+		Pointer(message_length),
+		Best_Goal(message_length),
+		Best_Goal_2(message_length), // 用來接收下一層 A* 回傳的結果
+		Child_Node(message_length);
+
+	vector<NODE_PATH> Stack(1, Pointer);
+
+	Best_Goal.metric = FLT_MAX;
+	Pre_Procedure(decoding_info.rx_signal_seq, G, Sorted_G, Location_Index, Metric_Table);
+
+	// for OSD-i
+	for (size_t i(0); i < codeword_length; ++i)
+		if (Metric_Table._matrix[0][i] != 0)  Hard_RX.at(i) = 1;
+
+	message_seq.assign(Hard_RX.begin(), Hard_RX.begin() + message_length);
+	Systematic_Linear_Block_Code_Encoder(Sorted_G, message_seq, MRIP_codeword);
+
+	do {
+		Pointer = Stack.at(0);
+
+		if ((Pointer.level == message_length) && (Pointer.D_z <= 1)) {
+			//
+			Stack.erase(Stack.begin());
+			//
+			//Systematic_Linear_Block_Code_Encoder(Sorted_G, Pointer.message_bits, codeword_seq);
+			codeword_seq = MRIP_codeword;
+			for (size_t index(0); index < Pointer.Diff_Index.size(); ++index) {
+				codeword_seq.at(Pointer.Diff_Index.at(index)) ^= 1;
+				for (size_t j(message_length); j < codeword_length; ++j) {
+					codeword_seq.at(j) ^= Sorted_G._matrix[Pointer.Diff_Index.at(index)][j];
+				}
+			}
+
+			for (size_t j(message_length); j < codeword_length; ++j) {
+				Pointer.metric += Metric_Table._matrix[codeword_seq.at(j)][j];
+				if (Pointer.metric > Best_Goal.metric) break;
+			}
+			//
+			decoding_info.STE += (codeword_length - message_length);
+			decoding_info.CandidateCodeWord++;
+			//
+			Update_Best_Goal_Procedure(Pointer, Best_Goal, Stack);
+		}
+		else if ((Pointer.level < message_length) && (Pointer.D_z < 1)) {
+
+			decoding_info.STE += 2;
+			for (__int8 new_bit(0); new_bit < 2; new_bit++) {
+				Extend_Node_Procedure(Pointer, Child_Node, Metric_Table, new_bit);
+				if (new_bit != Hard_RX.at(Pointer.level)) {
+					++Child_Node.D_z;
+					Child_Node.Diff_Index.push_back(Pointer.level);
+				}
+
+				if ((Child_Node.metric < Best_Goal.metric)) {
+					if (Pointer.metric != Child_Node.metric)
+						Place_Node(Stack, Child_Node, decoding_info);
+					else {
+						Stack.at(0) = Child_Node;
+						++decoding_info.COM;
+					}
+				}
+			}
+		}
+		else if ((Pointer.level < message_length) && (Pointer.D_z == 1)) {
+			Stack.erase(Stack.begin());
+			Best_Goal_2 = Best_Goal;
+			A_star_4_stack(Sorted_G, Metric_Table, Hard_RX, MRIP_codeword, Pointer, Best_Goal_2, (size_t)(1 + 1), decoding_info);
+			Update_Best_Goal_Procedure(Best_Goal_2, Best_Goal, Stack);
+		}
+	} while (!Stack.empty());
+
+	//
+	Systematic_Linear_Block_Code_Encoder(Sorted_G, Best_Goal.message_bits, codeword_seq);
+	Desort_Function(Location_Index, codeword_seq, decoding_info.estimated_codeword);
+
+	//
+	decoding_info.STE = decoding_info.STE / (double)message_length;
+	decoding_info.COM = decoding_info.COM / (double)message_length;
+
+	//
+	if (decoding_info.STE > decoding_info.Worst_Case_STE)
+		decoding_info.Worst_Case_STE = decoding_info.STE;
+}
+void A_star_6_stack(MATRIX<__int8> &G, DECODING_INFO &decoding_info)
+{
+	size_t
+		message_length(G.Row_number),
+		codeword_length(G.Col_number);
+
+	vector <size_t>
+		Location_Index(G.Col_number, 0);
+	vector<__int8>
+		codeword_seq(codeword_length, 0),
+		message_seq(message_length, 0),
+		Hard_RX(codeword_length, 0),
+		MRIP_codeword(codeword_length, 0);
+
+	MATRIX<__int8> Sorted_G(G);
+	MATRIX<double> Metric_Table(2, codeword_length);
+
+	NODE_PATH
+		Pointer(message_length),
+		Best_Goal(message_length),
+		Best_Goal_2(message_length), // 用來接收下一層 A* 回傳的結果
+		Child_Node(message_length);
+
+	vector<NODE_PATH> Stack(1, Pointer);
+
+	Best_Goal.metric = FLT_MAX;
+	Pre_Procedure(decoding_info.rx_signal_seq, G, Sorted_G, Location_Index, Metric_Table);
+
+	// for OSD-i
+	for (size_t i(0); i < codeword_length; ++i)
+		if (Metric_Table._matrix[0][i] != 0)  Hard_RX.at(i) = 1;
+
+	message_seq.assign(Hard_RX.begin(), Hard_RX.begin() + message_length);
+	Systematic_Linear_Block_Code_Encoder(Sorted_G, message_seq, MRIP_codeword);
+
+	do {
+		Pointer = Stack.at(0);
+
+		if ((Pointer.level == message_length) && (Pointer.D_z <= 1)) {
+			//
+			Stack.erase(Stack.begin());
+			//
+			//Systematic_Linear_Block_Code_Encoder(Sorted_G, Pointer.message_bits, codeword_seq);
+			codeword_seq = MRIP_codeword;
+			for (size_t index(0); index < Pointer.Diff_Index.size(); ++index) {
+				codeword_seq.at(Pointer.Diff_Index.at(index)) ^= 1;
+				for (size_t j(message_length); j < codeword_length; ++j) {
+					codeword_seq.at(j) ^= Sorted_G._matrix[Pointer.Diff_Index.at(index)][j];
+				}
+			}
+
+			for (size_t j(message_length); j < codeword_length; ++j) {
+				Pointer.metric += Metric_Table._matrix[codeword_seq.at(j)][j];
+				if (Pointer.metric > Best_Goal.metric) break;
+			}
+			//
+			decoding_info.STE += (codeword_length - message_length);
+			decoding_info.CandidateCodeWord++;
+			//
+			Update_Best_Goal_Procedure(Pointer, Best_Goal, Stack);
+		}
+		else if ((Pointer.level < message_length) && (Pointer.D_z < 1)) {
+
+			decoding_info.STE += 2;
+			for (__int8 new_bit(0); new_bit < 2; new_bit++) {
+				Extend_Node_Procedure(Pointer, Child_Node, Metric_Table, new_bit);
+				if (new_bit != Hard_RX.at(Pointer.level)) {
+					++Child_Node.D_z;
+					Child_Node.Diff_Index.push_back(Pointer.level);
+				}
+
+				if ((Child_Node.metric < Best_Goal.metric)) {
+					if (Pointer.metric != Child_Node.metric)
+						Place_Node(Stack, Child_Node, decoding_info);
+					else {
+						Stack.at(0) = Child_Node;
+						++decoding_info.COM;
+					}
+				}
+			}
+		}
+		else if ((Pointer.level < message_length) && (Pointer.D_z == 1)) {
+			Stack.erase(Stack.begin());
+			Best_Goal_2 = Best_Goal;
+			A_star_5_stack(Sorted_G, Metric_Table, Hard_RX, MRIP_codeword, Pointer, Best_Goal_2, (size_t)(1 + 1), decoding_info);
+			Update_Best_Goal_Procedure(Best_Goal_2, Best_Goal, Stack);
+		}
+	} while (!Stack.empty());
+
+	//
+	Systematic_Linear_Block_Code_Encoder(Sorted_G, Best_Goal.message_bits, codeword_seq);
+	Desort_Function(Location_Index, codeword_seq, decoding_info.estimated_codeword);
+
+	//
+	decoding_info.STE = decoding_info.STE / (double)message_length;
+	decoding_info.COM = decoding_info.COM / (double)message_length;
+
+	//
+	if (decoding_info.STE > decoding_info.Worst_Case_STE)
+		decoding_info.Worst_Case_STE = decoding_info.STE;
+}
+void A_star_7_stack(MATRIX<__int8> &G, DECODING_INFO &decoding_info)
+{
+	size_t
+		message_length(G.Row_number),
+		codeword_length(G.Col_number);
+
+	vector <size_t>
+		Location_Index(G.Col_number, 0);
+	vector<__int8>
+		codeword_seq(codeword_length, 0),
+		message_seq(message_length, 0),
+		Hard_RX(codeword_length, 0),
+		MRIP_codeword(codeword_length, 0);
+
+	MATRIX<__int8> Sorted_G(G);
+	MATRIX<double> Metric_Table(2, codeword_length);
+
+	NODE_PATH
+		Pointer(message_length),
+		Best_Goal(message_length),
+		Best_Goal_2(message_length), // 用來接收下一層 A* 回傳的結果
+		Child_Node(message_length);
+
+	vector<NODE_PATH> Stack(1, Pointer);
+
+	Best_Goal.metric = FLT_MAX;
+	Pre_Procedure(decoding_info.rx_signal_seq, G, Sorted_G, Location_Index, Metric_Table);
+
+	// for OSD-i
+	for (size_t i(0); i < codeword_length; ++i)
+		if (Metric_Table._matrix[0][i] != 0)  Hard_RX.at(i) = 1;
+
+	message_seq.assign(Hard_RX.begin(), Hard_RX.begin() + message_length);
+	Systematic_Linear_Block_Code_Encoder(Sorted_G, message_seq, MRIP_codeword);
+
+	do {
+		Pointer = Stack.at(0);
+
+		if ((Pointer.level == message_length) && (Pointer.D_z <= 1)) {
+			//
+			Stack.erase(Stack.begin());
+			//
+			//Systematic_Linear_Block_Code_Encoder(Sorted_G, Pointer.message_bits, codeword_seq);
+			codeword_seq = MRIP_codeword;
+			for (size_t index(0); index < Pointer.Diff_Index.size(); ++index) {
+				codeword_seq.at(Pointer.Diff_Index.at(index)) ^= 1;
+				for (size_t j(message_length); j < codeword_length; ++j) {
+					codeword_seq.at(j) ^= Sorted_G._matrix[Pointer.Diff_Index.at(index)][j];
+				}
+			}
+
+			for (size_t j(message_length); j < codeword_length; ++j) {
+				Pointer.metric += Metric_Table._matrix[codeword_seq.at(j)][j];
+				if (Pointer.metric > Best_Goal.metric) break;
+			}
+			//
+			decoding_info.STE += (codeword_length - message_length);
+			decoding_info.CandidateCodeWord++;
+			//
+			Update_Best_Goal_Procedure(Pointer, Best_Goal, Stack);
+		}
+		else if ((Pointer.level < message_length) && (Pointer.D_z < 1)) {
+
+			decoding_info.STE += 2;
+			for (__int8 new_bit(0); new_bit < 2; new_bit++) {
+				Extend_Node_Procedure(Pointer, Child_Node, Metric_Table, new_bit);
+				if (new_bit != Hard_RX.at(Pointer.level)) {
+					++Child_Node.D_z;
+					Child_Node.Diff_Index.push_back(Pointer.level);
+				}
+
+				if ((Child_Node.metric < Best_Goal.metric)) {
+					if (Pointer.metric != Child_Node.metric)
+						Place_Node(Stack, Child_Node, decoding_info);
+					else {
+						Stack.at(0) = Child_Node;
+						++decoding_info.COM;
+					}
+				}
+			}
+		}
+		else if ((Pointer.level < message_length) && (Pointer.D_z == 1)) {
+			Stack.erase(Stack.begin());
+			Best_Goal_2 = Best_Goal;
+			A_star_6_stack(Sorted_G, Metric_Table, Hard_RX, MRIP_codeword, Pointer, Best_Goal_2, (size_t)(1 + 1), decoding_info);
 			Update_Best_Goal_Procedure(Best_Goal_2, Best_Goal, Stack);
 		}
 	} while (!Stack.empty());

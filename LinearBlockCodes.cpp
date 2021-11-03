@@ -41,6 +41,7 @@ size_t G_QR192_96[4] = { 07741633224, 03422557065, 06354432042, 00100000000 };  
 size_t G_BCH128_64[3] = { 01206534025, 05707731000, 04500000000 };
 size_t G_BCH128_78[2] = { 05446000435, 04260232000};  // Chou-Yin Code Rate=0.6093 
 size_t G_BCH128_99[1] = { 03447023271 };
+size_t G_BCH64_36[1] = { 04156402114 };
 size_t G_BCH256_45[8] = { 01520205605, 05234161131, 01013463764, 02370156367, 00024470762, 03730332021, 05702505154, 0100000000 };
 size_t G_BCH256_99[6] = { 01065666725, 03473174222, 07414162015, 07433225241, 01076432303, 04310000000 };
 size_t G_BCH256_131[5] = { 02157133314, 07151015126, 01250277442, 01420241654, 07100000000 };
@@ -98,10 +99,12 @@ void CODE::ChooseCode()
 		<< " " << BCH_256_99 << ": (256,99) BCH Code		\n"
 		<< " " << BCH_256_131 << ": (256,131) BCH Code	\n"
 		<< " " << BCH_128_36 << ": (128,36) BCH Code \n"
+		<< " " << BCH_64_36_Rep << ": (64,36)eBCH + repeatition\n"
 
 		<< "\n****** RS Code ***** \n\n"
 		<< " " << RSGF2_64_36 << ": (64,36) RS convert to GF(2)	\n"
 		<< " " << RS_16_9_concat_8_4 << ": RS(16,9,8) concatenated (8,4)HM \n"
+		<< " " << HM_8_4 << ": Hamming 8 4 code \n"
 
 		<< " \n****** Others ***** \n\n"
 		<< " " << LDPC_96_48 << ": (96,48) LDPC			\n"
@@ -280,6 +283,15 @@ void CODE::ChooseCode()
 		G.Building_Empty_Matrix(Row_Number, Col_Number);
 		Extended_BCH_Generator_Matrix(G_BCH128_36, G);
 		break;
+	case BCH_64_36_Rep:
+		Col_Number = 64;
+		Row_Number = 36;
+		Title = "(64,36) BCH Code + repeatition";
+		G.Building_Empty_Matrix(Row_Number, Col_Number);
+		Extended_BCH_Generator_Matrix(G_BCH64_36, G);
+		repeatition(G);
+		Col_Number = 128;
+		break;
 	case RSGF2_64_36:
 		Title = "(64,36)Reed-Solomon Code ";
 		ReadFile_GeneratorMatrix("RSGF2_64_36.txt", G);
@@ -294,6 +306,15 @@ void CODE::ChooseCode()
 		G.Building_Empty_Matrix(G_Inner.Row_number, G_.Col_number);
 		Matrix_Mul(G_Inner, G_, G);
 		G._matrix_inner = G_Inner._matrix;
+		H.Building_Empty_Matrix(4, 8);
+		ReadFile_GeneratorMatrix("HM8_4.txt", H);//讀取H矩陣
+		G._matrix_outer = H._matrix;
+		Col_Number = G.Col_number;
+		Row_Number = G.Row_number;
+		break;
+	case HM_8_4:
+		Title = "Hamming_8_4";
+		ReadFile_GeneratorMatrix("G8_4.txt",G);
 		H.Building_Empty_Matrix(4, 8);
 		ReadFile_GeneratorMatrix("HM8_4.txt", H);//讀取H矩陣
 		G._matrix_outer = H._matrix;
@@ -2005,4 +2026,16 @@ inline void Matrix_Mul(MATRIX<__int8> & M1, MATRIX<__int8> & M2, MATRIX<__int8>&
 		}
 	}
 	
+}
+
+inline void repeatition(MATRIX<__int8> & G) {
+	G.Col_number *= 2;
+	for (int i = 0; i < G.Row_number; i++) {
+		G._matrix.at(i).resize(G.Col_number);
+	}
+	for (int i = 0; i < G.Row_number; i++) {
+		for (int j = 0; j < G.Col_number / 2; j++) {
+			G._matrix.at(i).at(j + G.Col_number / 2) = G._matrix.at(i).at(j);
+		}
+	}
 }

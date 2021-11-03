@@ -230,6 +230,12 @@
 #define A_Star_Section_PC_out			115
 #define SPA_A_Star						116
 #define SPA_A_Star_ver2					117
+#define A_Star_N_Section				118
+#define A_Star_5_Stack					119
+#define A_Star_6_Stack					120
+#define A_Star_7_Stack					121
+#define SPA_AvgLLR						122
+#define A_Star_Rep						123
 
 
 

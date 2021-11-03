@@ -1,15 +1,16 @@
- Decoding Algorithm Simulation for RS_16_9_concat_8_4
+ 
+ A* I (Original) Decoding Algorithm Simulation for Random Code ( P(bit=1)=P(bit=0)=0.5 ),(40,10) 
 
  -----------------------------------------------------
 
- Start Time : 2021 / 10 / 12 , 15 : 52
+ Start Time : 2021 / 11 / 3 , 12 : 58
 
- The Number of Blocks =  1000000
- The Number of Symbols =  36000000
- Start SNR [dB] =  2 [dB] ¡÷ Es/N0 [dB] = -3.50907 [dB]
- End SNR [dB] =  4 [dB] ¡÷ Es/N0 [dB] = -1.50907 [dB]
- Step SNR [dB] =  0.5 [dB]
- Block Step = 1000
+ The Number of Blocks =  100
+ The Number of Symbols =  1000
+ Start SNR [dB] =  2 [dB] ¡÷ Es/N0 [dB] = -4.0206 [dB]
+ End SNR [dB] =  2 [dB] ¡÷ Es/N0 [dB] = -4.0206 [dB]
+ Step SNR [dB] =  2 [dB]
+ Block Step = 100
  Stack Size = 10000
  Error Blocks Threshold = 100
 
@@ -37,32 +38,32 @@
 -----------------------------------------------------
 
 2
--3.50907
-0.00822917
-0.02925
-38470.9
-3.72186e+06
-14328.4
+-4.0206
+0.009
+0.02
+168.096
+95.437
+48.85
 0
-147860
-1.68642e+07
+1429.6
+1357.6
 0
 0
-10001
+92
 -----------
 0
 0
 0
 -----------
-0.000430556
-0.002
+0.009
+0.02
 0
 0
 0
 0
 -----------
-3950.18
-1.01261
+0.053
+1905.66
 
 
 

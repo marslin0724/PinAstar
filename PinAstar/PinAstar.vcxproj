@@ -146,6 +146,7 @@
     <ClCompile Include="..\TURBO_OPER.cpp" />
     <ClCompile Include="AStarDecode_Adaptive.cpp" />
     <ClCompile Include="AStarDecode_DM_III.cpp" />
+    <ClCompile Include="AStarDecode_repeatition.cpp" />
     <ClCompile Include="AStarDecode_RSS_II.cpp" />
     <ClCompile Include="AStarDecode_RSS_OSC_II.cpp" />
     <ClCompile Include="AstarDecode_section_RSS.cpp" />

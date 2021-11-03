@@ -726,3 +726,190 @@ inline void test(NODE_PATH& node, MATRIX<double>& Metric_Table) {
 		cout << endl;
 	}
 }
+
+//分成N段
+void A_star_N_Section(MATRIX<__int8>& G, DECODING_INFO& decoding_info)
+{	
+	size_t
+		message_length(G.Row_number),
+		codeword_length(G.Col_number),
+		segment_length(message_length / decoding_info.N_section);
+	double
+		min_metric;
+
+	vector <size_t>
+		Location_Index(G.Col_number, 0);
+	vector<__int8>
+		codeword_seq(codeword_length, 0),
+		message_seq(message_length, 0);
+
+	MATRIX<__int8> Sorted_G(G);
+	MATRIX<double> Metric_Table(2, codeword_length);
+
+	NODE_PATH
+		Pointer(message_length),
+		Best_Goal(message_length),
+		Child_Node(message_length);
+
+	Best_Goal.metric = FLT_MAX;
+	
+	vector<vector<NODE_PATH>> S_Stack;	//C_Stack為存放達到segment_length的node
+	vector<vector<NODE_COMB>> C_Stack;
+	S_Stack.resize(decoding_info.N_section);
+	C_Stack.resize(decoding_info.N_section);
+	for (int i = 0; i < decoding_info.N_section; i++) {
+		S_Stack.at(i).reserve(decoding_info.StackSize + 1);
+		C_Stack.at(i).reserve(decoding_info.StackSize + 1);
+		Pointer.level = segment_length * i;
+		S_Stack.at(i).push_back(Pointer);
+	}
+	//選擇Stack的參考
+	size_t stack_flag ;
+
+	Pre_Procedure(decoding_info.rx_signal_seq, G, Sorted_G, Location_Index, Metric_Table);
+
+	while (MutiStack_nonEmpty(S_Stack)) {
+		min_metric = INT_MAX;
+		for (int i = decoding_info.N_section-1; i >= 0; i--) {
+			if (!S_Stack.at(i).empty()) {
+				if (S_Stack.at(i).at(0).metric < min_metric) {
+					stack_flag = i;
+					min_metric = S_Stack.at(i).at(0).metric;
+				}
+			}
+		}
+		decoding_info.COM++;
+		Pointer = S_Stack.at(stack_flag).at(0);
+		if (stack_flag != decoding_info.N_section - 1) {
+			if (Pointer.level == (segment_length*(stack_flag + 1) - 1))
+				S_Stack.at(stack_flag).erase(S_Stack.at(stack_flag).begin());
+
+			for (__int8 new_bit(0); new_bit < 2; ++new_bit) {
+				Extend_Node_Procedure(Pointer, Child_Node, Metric_Table, new_bit);
+				++decoding_info.STE;
+
+				if ((Child_Node.level == segment_length * (stack_flag + 1) )&& (Child_Node.metric < Best_Goal.metric)) {
+					N_Combine_Segment(Child_Node, C_Stack, S_Stack, stack_flag, Best_Goal, segment_length, decoding_info,
+						G, Sorted_G, Metric_Table);
+				}
+				else if ((Child_Node.level < segment_length * (stack_flag + 1)) && (Child_Node.metric < Best_Goal.metric)) {
+					if (Child_Node.metric != Pointer.metric)
+						Place_Node(S_Stack.at(stack_flag), Child_Node, decoding_info);
+					else {
+						S_Stack.at(stack_flag).at(0) = Child_Node;
+						++decoding_info.COM;
+					}
+				}
+			}
+		}
+		else {
+			if ((Pointer.level == message_length - 1))
+				S_Stack.at(stack_flag).erase(S_Stack.at(stack_flag).begin());
+
+			for (__int8 new_bit(0); new_bit < 2; ++new_bit) {
+				Extend_Node_Procedure(Pointer, Child_Node, Metric_Table, new_bit);
+				++decoding_info.STE;
+
+				if ((Child_Node.level == message_length)&& (Child_Node.metric < Best_Goal.metric)) {
+					N_Combine_Segment(Child_Node, C_Stack, S_Stack, stack_flag, Best_Goal, segment_length, decoding_info,
+						G, Sorted_G, Metric_Table);
+				}
+				else if ((Child_Node.level < message_length) && (Child_Node.metric < Best_Goal.metric)) {
+					if (Child_Node.metric != Pointer.metric)
+						Place_Node(S_Stack.at(stack_flag), Child_Node, decoding_info);
+					else {
+						S_Stack.at(stack_flag).at(0) = Child_Node;
+						++decoding_info.COM;
+					}
+				}
+			}
+		}
+	}
+
+	//
+	Systematic_Linear_Block_Code_Encoder(Sorted_G, Best_Goal.message_bits, codeword_seq);
+	Desort_Function(Location_Index, codeword_seq, decoding_info.estimated_codeword);
+
+	//
+	decoding_info.STE = decoding_info.STE / (double)message_length;
+	decoding_info.COM = decoding_info.COM / (double)message_length;
+
+	//
+	if (decoding_info.COM > decoding_info.Worst_Case_COM)
+		decoding_info.Worst_Case_COM = decoding_info.COM;
+
+	if (decoding_info.STE > decoding_info.Worst_Case_STE)
+		decoding_info.Worst_Case_STE = decoding_info.STE;
+}
+
+inline bool MutiStack_nonEmpty(vector<vector<NODE_PATH>>& S_Stack) {
+	bool flag = 0;
+	for (int i = 0; i < S_Stack.size(); i++) {
+		flag |= !S_Stack.at(i).empty();
+	}
+	return flag;
+}
+
+//改版 C_Stacl_Update使用NODE_COMB N個Section
+inline void N_Combine_Segment(NODE_PATH &Update_node, vector<vector<NODE_COMB>> &C_Stack, vector<vector<NODE_PATH>>& S_Stack,size_t& stack_flag,
+	NODE_PATH &Best_Goal, size_t segment_length,
+	DECODING_INFO& decoding_info, MATRIX<__int8>& G, MATRIX<__int8>& Sorted_G, MATRIX<double>& Metric_Table) {
+	size_t
+		message_length(G.Row_number),
+		codeword_length(G.Col_number),
+		start, end;
+	double metric = 0;
+	NODE_COMB
+		Combine_node(codeword_length);
+	vector<__int8>
+		codeword_seq(codeword_length);
+	//double metric_bound = Best_Goal.metric - Update_node.metric;
+	Combine_node.codeword_bits.assign(Update_node.message_bits.begin(), Update_node.message_bits.end());
+	Systematic_Linear_Block_Code_Encoder(Sorted_G, Combine_node.codeword_bits, Combine_node.codeword_bits);
+	decoding_info.STE += (codeword_length - message_length);
+	Combine_node.metric = Update_node.metric;
+	Place_C_Stack(C_Stack.at(stack_flag), Combine_node, decoding_info);
+	metric = Best_Goal.metric;
+	recursive_combine(Combine_node, C_Stack, 0, stack_flag,
+		Combine_node.metric, Best_Goal, Sorted_G, Metric_Table);
+	if (metric > Best_Goal.metric) {
+		for (int i = 0; i < C_Stack.size(); i++) {
+			Update_Stack(Best_Goal, C_Stack.at(i));
+			Update_Stack(Best_Goal, S_Stack.at(i));
+		}
+	}	
+}
+
+void recursive_combine(NODE_COMB Combine_node, vector<vector<NODE_COMB>> &C_Stack,size_t level,size_t& stack_flag,
+	double sum_metric, NODE_PATH &Best_Goal, MATRIX<__int8>& Sorted_G, MATRIX<double>& Metric_Table) {
+	NODE_COMB temp_node = Combine_node;
+	if (level == C_Stack.size()) {
+		for (size_t j(Sorted_G.Row_number); j < Sorted_G.Col_number; ++j)
+			sum_metric += Metric_Table._matrix[Combine_node.codeword_bits.at(j)][j];
+		if (sum_metric < Best_Goal.metric) {
+			for (int j = 0; j < Sorted_G.Row_number; j++) {
+				Best_Goal.message_bits.at(j) = Combine_node.codeword_bits.at(j);
+			}
+			Best_Goal.metric = sum_metric;
+		}
+		return;
+	}
+	if (level != stack_flag) {
+		for (int i = 0; i < C_Stack.at(level).size(); i++) {
+			if (sum_metric + C_Stack.at(level).at(i).metric < Best_Goal.metric) {
+				for (int k = 0; k < Combine_node.codeword_bits.size(); k++) {
+					temp_node.codeword_bits.at(k) =
+						 Combine_node.codeword_bits.at(k) ^ C_Stack.at(level).at(i).codeword_bits.at(k);
+					
+				}
+				recursive_combine(temp_node, C_Stack, level + 1, stack_flag,
+					sum_metric + C_Stack.at(level).at(i).metric, Best_Goal, Sorted_G, Metric_Table);
+			}
+			else break;
+		}
+	}
+	else {
+		recursive_combine(temp_node, C_Stack, level + 1, stack_flag,
+			sum_metric , Best_Goal, Sorted_G, Metric_Table);
+	}
+}

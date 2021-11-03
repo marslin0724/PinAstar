@@ -496,6 +496,14 @@ inline void next_extend(NODE_PATH& Node, vector<NODE_PATH> &C_Stack, forward_lis
 	int segment_length, int message_length, DECODING_INFO& decoding_info);
 inline bool meg_equal(vector<__int8> meg1, vector<__int8> meg2, int len);
 inline void test(NODE_PATH& node, MATRIX<double>& Metric_Table);
+//N_section
+void A_star_N_Section(MATRIX<__int8>& G, DECODING_INFO& decoding_info);
+inline void N_Combine_Segment(NODE_PATH &Update_node, vector<vector<NODE_COMB>> &C_Stack, vector<vector<NODE_PATH>>& S_Stack, size_t& stack_flag,
+	NODE_PATH &Best_Goal, size_t segment_length,
+	DECODING_INFO& decoding_info, MATRIX<__int8>& G, MATRIX<__int8>& Sorted_G, MATRIX<double>& Metric_Table);
+void recursive_combine(NODE_COMB Combine_node, vector<vector<NODE_COMB>> &C_Stack, size_t level, size_t& stack_flag,
+	double sum_metric, NODE_PATH &Best_Goal, MATRIX<__int8>& Sorted_G, MATRIX<double>& Metric_Table);
+inline bool MutiStack_nonEmpty(vector<vector<NODE_PATH>>& S_Stack);
 //Pin test
 void MD_test(MATRIX<__int8> &G, DECODING_INFO &decoding_info);
 void compute_MD(size_t& min_d, vector<__int8>& message_bits, MATRIX<__int8> &G);
@@ -507,5 +515,31 @@ void A_star_section_PC_out(MATRIX<__int8>& G, DECODING_INFO& decoding_info);
 void SPA_A_star(MATRIX<__int8>& G, DECODING_INFO& decoding_info);
 void SPA_subDecoder(MATRIX<__int8> &H, vector<double> &Rx, double var, size_t SPA_I);
 void SPA_A_star_ver2(MATRIX<__int8>& G, DECODING_INFO& decoding_info);
+void SPA_subDecoder2(MATRIX<__int8> &H, vector<double> &Rx, double var, size_t SPA_I);
+void SPA_LLR(MATRIX<__int8> &G, DECODING_INFO &decoding_info);
+//Multi Stack
+void A_star_5_stack(MATRIX<__int8> &G, MATRIX<double> &Metric_Table, vector<__int8> &Hard_RX, vector<__int8> &MRIP_codeword, NODE_PATH &Node, NODE_PATH &Pre_Best_Goal, size_t pc_i, DECODING_INFO &decoding_info);
+void A_star_6_stack(MATRIX<__int8> &G, MATRIX<double> &Metric_Table, vector<__int8> &Hard_RX, vector<__int8> &MRIP_codeword, NODE_PATH &Node, NODE_PATH &Pre_Best_Goal, size_t pc_i, DECODING_INFO &decoding_info);
+void A_star_5_stack(MATRIX<__int8> &G, DECODING_INFO &decoding_info);
+void A_star_6_stack(MATRIX<__int8> &G, DECODING_INFO &decoding_info);
+void A_star_7_stack(MATRIX<__int8> &G, DECODING_INFO &decoding_info);
+
+//repeatition
+void A_star_repeatition(MATRIX<__int8> &G, DECODING_INFO &decoding_info);
+void Extend_Node_Procedure_rep(
+	NODE_PATH		&Pointer,
+	NODE_PATH		&child_node,
+	MATRIX<double>	&metric_table,
+	__int8			&new_bit,
+	vector<size_t>& rep_idx);
+void Place_Node_rep(vector<NODE_PATH> &Stack, NODE_PATH &child_node, DECODING_INFO &decoding_info);
+void Pre_Procedure_rep(
+	vector<double>		&rx_signal,
+	MATRIX<__int8>		&G,
+	MATRIX<__int8>		&Sorted_G,
+	vector<size_t>		&Permutation,
+	MATRIX<double>		&metric_table,
+	vector<size_t>		&rep_idx);
+
 
 
