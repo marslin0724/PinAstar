@@ -66,13 +66,13 @@ void MATRIX<T>::Building_Empty_Matrix(size_t row, size_t col)
 	Col_number = col;
 	std::vector<T> v(col, 0);
 	_matrix.assign(row, v);
-	v.~vector();
+	//v.~vector();
 }	
 
 template<class T>
 void MATRIX<T>::Delete_Matrix(void)
 {
-	_matrix.~vector();
+	//_matrix.~vector();
 }	
 
 template<class T>
