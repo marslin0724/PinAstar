@@ -7,6 +7,7 @@
 #include "DefineClass.h"
 #include "DefineParameter.h"
 #include "AstarDecode.h"
+#include <cfloat>
 //#include "LinearBlockCodes.h"
 using namespace std;
 
@@ -71,7 +72,7 @@ public:
 	//vector < vector<__int8> > Message_Seq;
 	vector < vector <__int8> > Message_Seq, CodeWord_Seq, Error_Seq;
 	vector < vector <double> > Received_Seq;
-	vector<__int8> LDPC_Message_Seq, Inner_CodeWord_Seq; //LDPC_CodeWord_Seq           //  ¤W¦¸¶i«×:­n§âLDPC¥þ³¡´«¦¨Inner !
+	vector<__int8> LDPC_Message_Seq, Inner_CodeWord_Seq; //LDPC_CodeWord_Seq           //  ï¿½Wï¿½ï¿½ï¿½iï¿½ï¿½:ï¿½nï¿½ï¿½LDPCï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Inner !
 	vector<double> Tx_Signal_Seq_series, Rx_Signal_Seq_series;          // series of A* codes
 	int MessageLength,CodeLength,CodeAmount,LDPC_RowNumber,LDPC_ColNumber;
 

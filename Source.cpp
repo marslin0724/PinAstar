@@ -118,7 +118,7 @@ void Sort_function(
 	vector<size_t>		&permutation_seq,
 	vector<__int8>		&sorted_rx_signal);
 
-void main()
+int main()
 {
 	//cout << sqrt(13) << endl;
 	/*

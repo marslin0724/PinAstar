@@ -1,4 +1,5 @@
 #include "PinAstar/DefineClass.h"
+#include <cmath>
 
 void OPER_PARA::ShowDecoder()
 {
@@ -942,13 +943,13 @@ OPER_PARA::OPER_PARA(CODE Code)
 			cout << " Block Number = ";					cin >> block_number;
 			cout << " Start SNR [dB] = ";				cin >> SNR_dB_start;
 			cout
-				<< " ¡÷ Es/N0 [dB] = "
+				<< " ï¿½ï¿½ Es/N0 [dB] = "
 				<< SNR_dB_start + 10. * log10(Code.Code_Rate)
 				<< " [dB]\n" << endl;
 			cout 
 				<< " End SNR [dB] = ";					cin >> SNR_dB_end;
 			cout
-				<< " ¡÷ Es/N0 [dB] = "
+				<< " ï¿½ï¿½ Es/N0 [dB] = "
 				<< SNR_dB_end + 10. * log10(Code.Code_Rate)
 				<< " [dB]\n" << endl;
 			cout
@@ -1029,9 +1030,9 @@ OPER_PARA::OPER_PARA(CODE Code)
 
 	cout
 		<< "\n Start SNR [dB] = "	<< SNR_dB_start << " [dB] "
-		<< " ¡÷ Es/N0 [dB] = "		<< SNR_dB_start + 10 * log10(Code.Code_Rate) << " [dB] \n"
+		<< " ï¿½ï¿½ Es/N0 [dB] = "		<< SNR_dB_start + 10 * log10(Code.Code_Rate) << " [dB] \n"
 		<< " End SNR [dB] = "		<< SNR_dB_end	<< " [dB] "
-		<< " ¡÷ Es/N0 [dB] = "		<< SNR_dB_end + 10 * log10(Code.Code_Rate) << " [dB] \n"
+		<< " ï¿½ï¿½ Es/N0 [dB] = "		<< SNR_dB_end + 10 * log10(Code.Code_Rate) << " [dB] \n"
 		<< " Step SNR [dB] = "		<< SNR_dB_step	<< " [dB] \n"
 		<< " Block Step = "			<< BlockStep	<< "\n"
 		<< " Stack Size = ";

@@ -7,7 +7,6 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(SRC
-    ${CMAKE_SOURCE_DIR}/PinAstar/ABP_AStarDecode.cpp
     ${CMAKE_SOURCE_DIR}/PinAstar/AStarDecode_Adaptive.cpp
     ${CMAKE_SOURCE_DIR}/PinAstar/AStarDecode_DM_III.cpp
     ${CMAKE_SOURCE_DIR}/PinAstar/AStarDecode_repeatition.cpp
